@@ -1,4 +1,4 @@
-package com.davirdgs.tunes
+package com.davirdgs.tunes.base
 
 import android.view.WindowManager
 import androidx.activity.ComponentActivity

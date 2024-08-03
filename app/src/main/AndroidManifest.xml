@@ -17,10 +17,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Starting"
+        android:name=".DroidApp"
         tools:targetApi="tiramisu">
         <activity
-            android:name="com.davirdgs.tunes.MainActivity"
+            android:name="com.davirdgs.tunes.ui.MainActivity"
             android:exported="true"
+            android:screenOrientation="nosensor"
             android:colorMode="wideColorGamut">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,4 +1,4 @@
-package com.davirdgs.tunes
+package com.davirdgs.tunes.ui
 
 import android.os.Bundle
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.davirdgs.tunes.base.BaseActivity
 import com.davirdgs.tunes.ui.theme.MusicAIChallengeTheme
 
 class MainActivity : BaseActivity() {
