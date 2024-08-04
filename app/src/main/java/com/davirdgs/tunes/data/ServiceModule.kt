@@ -61,7 +61,7 @@ internal object ServiceModule {
         retrofit.create(ApiService::class.java)
 
     @Provides
-    internal fun provideTunesRepository(
+    fun provideTunesRepository(
         apiService: ApiService
     ): TunesRepository = TunesRepositoryImpl(apiService)
 }

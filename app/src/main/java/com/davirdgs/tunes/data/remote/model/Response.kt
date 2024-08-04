@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class BaseResponse<T>(
+internal data class BaseResponse<T>(
     @SerialName("resultCount")
     val resultCount: Int,
     @SerialName("results")
@@ -12,7 +12,7 @@ data class BaseResponse<T>(
 )
 
 @Serializable
-data class Track(
+internal data class Track(
     @SerialName("artistId")
     val artistId: Int,
     @SerialName("artistName")

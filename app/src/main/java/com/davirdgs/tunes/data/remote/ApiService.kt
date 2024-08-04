@@ -5,7 +5,7 @@ import com.davirdgs.tunes.data.remote.model.Track
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface ApiService {
+internal interface ApiService {
     @GET("/search")
     suspend fun search(
         @Query("media") media: String = "music",
