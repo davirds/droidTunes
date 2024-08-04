@@ -37,7 +37,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.davirdgs.tunes.data.model.Artist
 import com.davirdgs.tunes.data.model.Collection
 import com.davirdgs.tunes.data.model.Song
-import com.davirdgs.tunes.ui.theme.MusicAIChallengeTheme
+import com.davirdgs.tunes.ui.theme.AppTheme
 
 const val HOME_SCREEN = "home"
 
@@ -167,6 +167,7 @@ private fun HomeScreenPreview() {
                 name = "Someone"
             ),
             timeMillis = 0,
+            previewUrl = "",
             collection = Collection(
                 id = 0,
                 name = "Some"
@@ -181,6 +182,7 @@ private fun HomeScreenPreview() {
                 name = "Someone"
             ),
             timeMillis = 0,
+            previewUrl = "",
             collection = Collection(
                 id = 0,
                 name = "Some"
@@ -195,13 +197,14 @@ private fun HomeScreenPreview() {
                 name = "Someone"
             ),
             timeMillis = 0,
+            previewUrl = "",
             collection = Collection(
                 id = 0,
                 name = "Some"
             )
         )
     )
-    MusicAIChallengeTheme {
+    AppTheme {
         HomeScreen(
             uiState = HomeUiState(songs = songs),
             onQueryChange = { },

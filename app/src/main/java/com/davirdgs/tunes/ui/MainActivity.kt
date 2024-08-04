@@ -10,7 +10,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.davirdgs.tunes.base.BaseActivity
 import com.davirdgs.tunes.ui.navigation.Navigation
-import com.davirdgs.tunes.ui.theme.MusicAIChallengeTheme
+import com.davirdgs.tunes.ui.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -30,7 +30,7 @@ class MainActivity : BaseActivity() {
 internal fun Application(
     content: @Composable () -> Unit
 ) {
-    MusicAIChallengeTheme {
+    AppTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background,
