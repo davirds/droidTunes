@@ -10,7 +10,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 
-private const val ALBUM_SCREEN = "home"
+private const val ALBUM_SCREEN = "album"
 
 fun NavGraphBuilder.albumScreen() {
     composable(route = ALBUM_SCREEN) {
