@@ -19,7 +19,7 @@ import com.davirdgs.tunes.ui.theme.AppTheme
 @Composable
 fun CustomSlider(
     modifier: Modifier = Modifier,
-    height: Dp = 12.dp,
+    height: Dp = 8.dp,
     backgroundColor: Color,
     progressColor: Color,
     thumbColor: Color,
@@ -58,7 +58,7 @@ fun CustomSlider(
                     val circlePositionX = sliderState.value * size.width + radius
                     drawCircle(
                         color = thumbColor,
-                        radius = radius,
+                        radius = size.height,
                         center = Offset(x = circlePositionX, y = radius)
                     )
                 }

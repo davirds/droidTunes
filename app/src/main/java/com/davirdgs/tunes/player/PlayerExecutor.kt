@@ -89,7 +89,7 @@ internal class PlayerExecutorImpl @Inject constructor(
 
     override fun seekForward() {
         _player?.run {
-            val position = currentPosition + 15000
+            val position = currentPosition + 5000
             val progress = calculateProgress(position, duration)
             _mediaStateFlow.update { it.copy(position = position, progress = progress) }
             seekTo(position)
@@ -98,7 +98,7 @@ internal class PlayerExecutorImpl @Inject constructor(
 
     override fun seekBack() {
         _player?.run {
-            val position = currentPosition - 15000
+            val position = currentPosition - 5000
             val progress = calculateProgress(position, duration)
             _mediaStateFlow.update { it.copy(position = position, progress = progress) }
             seekTo(position)

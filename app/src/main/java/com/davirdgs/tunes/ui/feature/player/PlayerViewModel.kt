@@ -1,16 +1,21 @@
 package com.davirdgs.tunes.ui.feature.player
 
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import com.davirdgs.tunes.base.jsonParam
 import com.davirdgs.tunes.data.model.Song
 import com.davirdgs.tunes.player.PlayerExecutor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 internal class PlayerViewModel @Inject constructor(
@@ -23,15 +28,70 @@ internal class PlayerViewModel @Inject constructor(
         get() = _uiState
 
     init {
-        val mediaItem = MediaItem.fromUri(_uiState.song.previewUrl)
-        playerExecutor.startPlayer(mediaItem, 0L)
+        subscribePlayerEvents()
+        startPlayer(_uiState.song)
+    }
+
+    private fun subscribePlayerEvents() {
+        viewModelScope.launch {
+            playerExecutor.mediaStateFlow.collectLatest { mediaState ->
+                _uiState = _uiState.copy(
+                    isPlaying = mediaState.isPlaying,
+                    position = mediaState.position,
+                    duration = mediaState.duration,
+                    progress = mediaState.progress
+                )
+            }
+        }
+    }
+
+    private fun startPlayer(song: Song) {
+        val mediaItem = song.toMediaItem()
+        playerExecutor.startPlayer(mediaItem)
+    }
+
+    fun play() {
+        playerExecutor.play()
+    }
+
+    fun pause() {
+        playerExecutor.pause()
+    }
+
+    fun forward() {
+        playerExecutor.seekForward()
+    }
+
+    fun rewind() {
+        playerExecutor.seekBack()
+    }
+
+    fun seekTo(percentage: Float) {
+        val position = (_uiState.duration * percentage).toLong()
+        playerExecutor.seekTo(position)
     }
 }
 
 internal data class PlayerUiState(
     val song: Song,
+    val isPlaying: Boolean = false,
+    val position: Long = 0L,
+    val duration: Long = 0L,
+    val progress: Float = 0f,
     val showLoading: Boolean = false,
     val showError: Boolean = false
 ) {
     constructor(songParam: SongParam) : this(song = songParam.toSong())
 }
+
+private fun Song.toMediaItem() = MediaItem.Builder()
+    .setMediaMetadata(
+        MediaMetadata.Builder()
+            .setTitle(name)
+            .setArtworkUri(Uri.parse(artworkUrl))
+            .setArtist(artist.name)
+            .setAlbumTitle(collection.name)
+            .build()
+    )
+    .setUri(previewUrl)
+    .build()
