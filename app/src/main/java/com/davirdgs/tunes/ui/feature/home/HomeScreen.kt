@@ -25,7 +25,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -129,7 +128,6 @@ private fun SongItem(
                 .size(48.dp)
                 .clip(RoundedCornerShape(8.dp)),
             painter = rememberAsyncImagePainter(model = artwork),
-            contentScale = ContentScale.Fit,
             contentDescription = "Song Artwork"
         )
         Column(
