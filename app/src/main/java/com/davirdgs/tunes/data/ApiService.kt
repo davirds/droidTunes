@@ -1,5 +1,6 @@
 package com.davirdgs.tunes.data
 
+import com.davirdgs.tunes.data.model.SearchResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -10,5 +11,5 @@ interface ApiService {
         @Query("term") term: String,
         @Query("limit") limit: Int,
         @Query("offset") offset: Int,
-    ): String // TODO create the right model
+    ): SearchResponse
 }
