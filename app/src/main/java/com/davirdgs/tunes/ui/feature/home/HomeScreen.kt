@@ -1,6 +1,7 @@
 package com.davirdgs.tunes.ui.feature.home
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -36,13 +37,16 @@ import com.davirdgs.tunes.data.model.Song
 
 const val HOME_SCREEN = "home"
 
-fun NavGraphBuilder.homeScreen() {
+fun NavGraphBuilder.homeScreen(
+    navigateToPlayer: (Song) -> Unit
+) {
     composable(route = HOME_SCREEN) {
         val viewModel = hiltViewModel<HomeViewModel>()
         HomeScreen(
             uiState = viewModel.uiState,
             onQueryChange = viewModel::onQueryChange,
-            onSearch = viewModel::onSearch
+            onSearch = viewModel::onSearch,
+            onSongClick = navigateToPlayer
         )
     }
 }
@@ -52,7 +56,8 @@ internal fun HomeScreen(
     modifier: Modifier = Modifier,
     uiState: HomeUiState,
     onQueryChange: (String) -> Unit,
-    onSearch: () -> Unit
+    onSearch: () -> Unit,
+    onSongClick: (Song) -> Unit
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
@@ -71,12 +76,15 @@ internal fun HomeScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize(),
-            contentPadding = PaddingValues(vertical = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             items(uiState.songs) { song ->
                 SongItem(
-                    song = song
+                    name = song.name,
+                    artist = song.artist.name,
+                    artwork = song.artworkUrl,
+                    onClick = { onSongClick(song) }
                 )
             }
         }
@@ -86,18 +94,23 @@ internal fun HomeScreen(
 @Composable
 private fun SongItem(
     modifier: Modifier = Modifier,
-    song: Song
+    name: String,
+    artist: String,
+    artwork: String,
+    onClick: () -> Unit
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+            .clip(RoundedCornerShape(8.dp))
+            .clickable { onClick() }
+            .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
             modifier = Modifier.size(48.dp)
-                .clip(RoundedCornerShape(4.dp)),
-            painter = rememberAsyncImagePainter(model = song.artworkUrl),
+                .clip(RoundedCornerShape(8.dp)),
+            painter = rememberAsyncImagePainter(model = artwork),
             contentScale = ContentScale.Fit,
             contentDescription = "Song Artwork"
         )
@@ -105,8 +118,8 @@ private fun SongItem(
         Column(
             verticalArrangement = Arrangement.SpaceAround
         ) {
-            Text(text = song.name)
-            Text(text = "by ${song.artist.name}")
+            Text(text = name)
+            Text(text = "by $artist")
         }
     }
 }
@@ -161,6 +174,7 @@ private fun HomeScreenPreview() {
     HomeScreen(
         uiState = HomeUiState(songs = songs),
         onQueryChange = { },
-        onSearch = { }
+        onSearch = { },
+        onSongClick = { }
     )
 }
