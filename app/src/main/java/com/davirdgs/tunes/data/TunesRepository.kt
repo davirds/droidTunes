@@ -42,7 +42,8 @@ private fun Track.toSongList() =
         artworkUrl = artworkUrl100,
         id = trackId,
         name = trackName,
-        timeMillis = trackTimeMillis
+        timeMillis = trackTimeMillis,
+        previewUrl = previewUrl
     )
 
 private fun Track.toArtist() =

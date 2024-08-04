@@ -6,7 +6,8 @@ data class Song(
     val timeMillis: Int,
     val artworkUrl: String,
     val artist: Artist,
-    val collection: Collection
+    val collection: Collection,
+    val previewUrl: String
 )
 
 data class Artist(
