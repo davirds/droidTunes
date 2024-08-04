@@ -2,11 +2,9 @@ package com.davirdgs.tunes.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import com.davirdgs.tunes.data.model.Song
 import com.davirdgs.tunes.ui.feature.album.albumScreen
 import com.davirdgs.tunes.ui.feature.home.HOME_SCREEN
 import com.davirdgs.tunes.ui.feature.home.homeScreen

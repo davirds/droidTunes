@@ -1,6 +1,7 @@
 package com.davirdgs.tunes.ui.feature.home
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -25,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -34,6 +37,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.davirdgs.tunes.data.model.Artist
 import com.davirdgs.tunes.data.model.Collection
 import com.davirdgs.tunes.data.model.Song
+import com.davirdgs.tunes.ui.theme.MusicAIChallengeTheme
 
 const val HOME_SCREEN = "home"
 
@@ -60,11 +64,24 @@ internal fun HomeScreen(
     onSongClick: (Song) -> Unit
 ) {
     Column(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .background(color = MaterialTheme.colorScheme.background)
+            .fillMaxSize()
+            .statusBarsPadding(),
     ) {
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    top = 24.dp,
+                    start = 16.dp,
+                    end = 16.dp,
+                ),
+            text = "Songs",
+            style = MaterialTheme.typography.titleLarge
+        )
         TextField(
             modifier = Modifier
-                .statusBarsPadding()
                 .fillMaxWidth()
                 .padding(16.dp),
             maxLines = 1,
@@ -108,18 +125,31 @@ private fun SongItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
-            modifier = Modifier.size(48.dp)
+            modifier = Modifier
+                .size(48.dp)
                 .clip(RoundedCornerShape(8.dp)),
             painter = rememberAsyncImagePainter(model = artwork),
             contentScale = ContentScale.Fit,
             contentDescription = "Song Artwork"
         )
-        Spacer(modifier = Modifier.size(12.dp))
         Column(
+            modifier = Modifier.fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 4.dp),
             verticalArrangement = Arrangement.SpaceAround
         ) {
-            Text(text = name)
-            Text(text = "by $artist")
+            Text(
+                text = name,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.labelMedium
+            )
+            Spacer(modifier = Modifier.size(4.dp))
+            Text(
+                text = artist,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.labelSmall
+            )
         }
     }
 }
@@ -171,10 +201,12 @@ private fun HomeScreenPreview() {
             )
         )
     )
-    HomeScreen(
-        uiState = HomeUiState(songs = songs),
-        onQueryChange = { },
-        onSearch = { },
-        onSongClick = { }
-    )
+    MusicAIChallengeTheme {
+        HomeScreen(
+            uiState = HomeUiState(songs = songs),
+            onQueryChange = { },
+            onSearch = { },
+            onSongClick = { }
+        )
+    }
 }
