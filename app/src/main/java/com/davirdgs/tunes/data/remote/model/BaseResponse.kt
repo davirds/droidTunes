@@ -26,9 +26,9 @@ data class Track(
     @SerialName("artworkUrl60")
     val artworkUrl60: String,
     @SerialName("collectionArtistId")
-    val collectionArtistId: Int?,
+    val collectionArtistId: Int? = null,
     @SerialName("collectionArtistName")
-    val collectionArtistName: String?,
+    val collectionArtistName: String? = null,
     @SerialName("collectionCensoredName")
     val collectionCensoredName: String,
     @SerialName("collectionExplicitness")
@@ -42,7 +42,7 @@ data class Track(
     @SerialName("collectionViewUrl")
     val collectionViewUrl: String,
     @SerialName("contentAdvisoryRating")
-    val contentAdvisoryRating: String?,
+    val contentAdvisoryRating: String? = null,
     @SerialName("country")
     val country: String,
     @SerialName("currency")

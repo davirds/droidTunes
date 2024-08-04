@@ -9,6 +9,7 @@ interface ApiService {
     @GET("/search")
     suspend fun search(
         @Query("media") media: String = "music",
+        @Query("entity") entity: String = "musicTrack",
         @Query("term") term: String,
         @Query("limit") limit: Int,
         @Query("offset") offset: Int,
