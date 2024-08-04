@@ -1,18 +1,18 @@
-package com.davirdgs.tunes.data.model
+package com.davirdgs.tunes.data.remote.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class SearchResponse(
+data class BaseResponse<T>(
     @SerialName("resultCount")
     val resultCount: Int,
     @SerialName("results")
-    val results: List<Result>
+    val results: List<T>
 )
 
 @Serializable
-data class Result(
+data class Track(
     @SerialName("artistId")
     val artistId: Int,
     @SerialName("artistName")

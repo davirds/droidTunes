@@ -1,6 +1,7 @@
 package com.davirdgs.tunes.data
 
 import com.davirdgs.tunes.BuildConfig
+import com.davirdgs.tunes.data.remote.ApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -58,4 +59,9 @@ internal object ServiceModule {
     @Provides
     internal fun provideService(retrofit: Retrofit): ApiService =
         retrofit.create(ApiService::class.java)
+
+    @Provides
+    internal fun provideTunesRepository(
+        apiService: ApiService
+    ): TunesRepository = TunesRepositoryImpl(apiService)
 }

@@ -1,6 +1,7 @@
-package com.davirdgs.tunes.data
+package com.davirdgs.tunes.data.remote
 
-import com.davirdgs.tunes.data.model.SearchResponse
+import com.davirdgs.tunes.data.remote.model.BaseResponse
+import com.davirdgs.tunes.data.remote.model.Track
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -11,5 +12,5 @@ interface ApiService {
         @Query("term") term: String,
         @Query("limit") limit: Int,
         @Query("offset") offset: Int,
-    ): SearchResponse
+    ): BaseResponse<Track>
 }
