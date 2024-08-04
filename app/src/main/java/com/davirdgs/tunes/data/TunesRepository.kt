@@ -2,9 +2,9 @@ package com.davirdgs.tunes.data
 
 import com.davirdgs.tunes.data.remote.ApiService
 import com.davirdgs.tunes.data.remote.model.Track
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import javax.inject.Inject
 
 interface TunesRepository {
     fun search(): Flow<List<Track>>
