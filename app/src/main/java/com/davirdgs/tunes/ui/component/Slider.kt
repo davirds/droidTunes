@@ -27,7 +27,7 @@ fun CustomSlider(
     value: Float,
     onValueChange: (Float) -> Unit,
 ) {
-    val cap = StrokeCap.Square
+    val cap = StrokeCap.Round
     Slider(
         modifier = modifier.fillMaxWidth(),
         value = value,
