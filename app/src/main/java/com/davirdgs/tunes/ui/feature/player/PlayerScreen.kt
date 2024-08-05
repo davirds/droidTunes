@@ -36,10 +36,9 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import coil.compose.rememberAsyncImagePainter
 import com.davirdgs.tunes.R
-import com.davirdgs.tunes.data.model.Artist
-import com.davirdgs.tunes.data.model.Collection
 import com.davirdgs.tunes.data.model.Song
 import com.davirdgs.tunes.ui.component.PlayerSeekProgress
+import com.davirdgs.tunes.ui.songMock
 import com.davirdgs.tunes.ui.theme.AppTheme
 
 internal const val SONG_PARAM = "song"
@@ -234,22 +233,7 @@ private fun PlayerController(
 @Preview
 @Composable
 private fun PlayerScreenPreview() {
-    val song = Song(
-        id = 0,
-        name = "Something",
-        artworkUrl = "",
-        artist = Artist(
-            id = 0,
-            name = "Someone"
-        ),
-        timeMillis = 0,
-        previewUrl = "",
-        collection = Collection(
-            id = 0,
-            name = "Some"
-        )
-    )
-
+    val song = songMock()
     AppTheme {
         PlayerScreen(
             uiState = PlayerUiState(song = song),
