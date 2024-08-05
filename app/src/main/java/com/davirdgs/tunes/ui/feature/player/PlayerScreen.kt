@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +14,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -47,11 +51,14 @@ fun NavController.navigateToPlayer(song: Song) {
     this.navigate("$PLAYER_PATH?$SONG_PARAM=$songParam")
 }
 
-fun NavGraphBuilder.playerScreen() {
+fun NavGraphBuilder.playerScreen(
+    navigateBack: () -> Unit,
+) {
     composable(route = PLAYER_SCREEN) {
         val viewModel = hiltViewModel<PlayerViewModel>()
         PlayerScreen(
             uiState = viewModel.uiState,
+            onNavigateBack = navigateBack,
             onSeekChange = viewModel::seekTo,
             onPlay = viewModel::play,
             onPause = viewModel::pause,
@@ -65,21 +72,25 @@ fun NavGraphBuilder.playerScreen() {
 internal fun PlayerScreen(
     modifier: Modifier = Modifier,
     uiState: PlayerUiState,
+    onNavigateBack: () -> Unit,
     onSeekChange: (Float) -> Unit,
     onPlay: () -> Unit,
     onPause: () -> Unit,
     onForward: () -> Unit,
     onBackward: () -> Unit
-
 ) {
     Column(
         modifier = modifier
             .background(color = MaterialTheme.colorScheme.background)
             .fillMaxSize()
-            .statusBarsPadding(),
+            .statusBarsPadding()
+            .navigationBarsPadding(),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Box(modifier = Modifier)
+        PlayerHeader(
+            onBackClick = onNavigateBack,
+            onOptionClick = {}
+        )
         Image(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
@@ -90,7 +101,6 @@ internal fun PlayerScreen(
         )
         PlayerController(
             modifier = Modifier
-                .navigationBarsPadding()
                 .padding(vertical = 32.dp),
             songName = uiState.song.name,
             artistName = uiState.song.artist.name,
@@ -103,6 +113,39 @@ internal fun PlayerScreen(
             onPause = onPause,
             onForward = onForward,
             onBackward = onBackward
+        )
+    }
+}
+
+@Composable
+private fun PlayerHeader(
+    modifier: Modifier = Modifier,
+    onBackClick: () -> Unit,
+    onOptionClick: () -> Unit
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp, horizontal = 4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Icon(
+            modifier = Modifier
+                .clip(RoundedCornerShape(50))
+                .clickable { onBackClick() }
+                .padding(8.dp)
+                .size(32.dp),
+            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+            contentDescription = "back"
+        )
+        Icon(
+            modifier = Modifier
+                .clip(RoundedCornerShape(50))
+                .clickable { onOptionClick() }
+                .padding(8.dp)
+                .size(32.dp),
+            imageVector = Icons.Filled.MoreVert,
+            contentDescription = "options"
         )
     }
 }
@@ -161,16 +204,16 @@ private fun PlayerController(
             Image(
                 modifier = Modifier
                     .clip(RoundedCornerShape(50))
+                    .clickable { onBackward() }
                     .padding(8.dp)
-                    .size(32.dp)
-                    .clickable { onBackward() },
+                    .size(32.dp),
                 painter = painterResource(id = R.drawable.ic_backward),
                 contentDescription = "backward"
             )
             Image(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(50))
                     .size(52.dp)
+                    .clip(RoundedCornerShape(50))
                     .clickable { playerActionClick() },
                 painter = painterResource(id = playerAction),
                 contentDescription = playerActionDescription
@@ -178,9 +221,9 @@ private fun PlayerController(
             Image(
                 modifier = Modifier
                     .clip(RoundedCornerShape(50))
+                    .clickable { onForward() }
                     .padding(8.dp)
-                    .size(32.dp)
-                    .clickable { onForward() },
+                    .size(32.dp),
                 painter = painterResource(id = R.drawable.ic_forward),
                 contentDescription = "forward"
             )
@@ -210,6 +253,7 @@ private fun PlayerScreenPreview() {
     AppTheme {
         PlayerScreen(
             uiState = PlayerUiState(song = song),
+            onNavigateBack = { },
             onSeekChange = { },
             onPlay = { },
             onPause = { },

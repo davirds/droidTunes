@@ -25,7 +25,9 @@ fun Navigation(
             navigateToPlayer = navHostController::navigateToPlayer
         )
 
-        playerScreen()
+        playerScreen(
+            navigateBack = navHostController::popBackStack
+        )
 
         albumScreen()
     }
