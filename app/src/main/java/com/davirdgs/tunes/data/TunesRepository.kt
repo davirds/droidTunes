@@ -11,22 +11,23 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 interface TunesRepository {
-    fun searchSongs(): Flow<List<Song>>
+    fun searchSongs(query: String): Flow<List<Song>>
 }
 
 internal class TunesRepositoryImpl @Inject constructor(
     private val remoteSource: ApiService
 ) : TunesRepository {
 
-    override fun searchSongs() = flow {
+    override fun searchSongs(query: String) = flow {
         try {
             val response = remoteSource.search(
-                term = "Twenty one pilots",
+                term = query,
                 limit = 25,
                 offset = 0
             )
             emit(response.toSongList())
         } catch (e: Throwable) {
+            // TODO handle the error based on the type
             e.printStackTrace()
         }
     }

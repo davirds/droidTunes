@@ -38,7 +38,7 @@ internal data class Track(
     @SerialName("collectionName")
     val collectionName: String,
     @SerialName("collectionPrice")
-    val collectionPrice: Double,
+    val collectionPrice: Double? = null,
     @SerialName("collectionViewUrl")
     val collectionViewUrl: String,
     @SerialName("contentAdvisoryRating")

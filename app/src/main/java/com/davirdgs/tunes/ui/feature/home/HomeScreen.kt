@@ -2,6 +2,7 @@ package com.davirdgs.tunes.ui.feature.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,7 +14,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.LineBreak
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -74,21 +78,57 @@ internal fun HomeScreen(
             onSearch = onSearch,
             maxLines = 1,
         )
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize(),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            items(uiState.songs) { song ->
-                SongItem(
-                    name = song.name,
-                    artist = song.artist.name,
-                    artwork = song.artworkUrl,
-                    onClick = { onSongClick(song) }
-                )
-            }
+        if (uiState.songs.isEmpty()) {
+            EmptyState()
+        } else {
+            SongsList(
+                songs = uiState.songs,
+                onSongClick = onSongClick
+            )
         }
+    }
+}
+
+@Composable
+private fun SongsList(
+    modifier: Modifier = Modifier,
+    songs: List<Song>,
+    onSongClick: (Song) -> Unit
+) {
+    LazyColumn(
+        modifier = modifier
+            .fillMaxSize(),
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        items(songs) { song ->
+            SongItem(
+                name = song.name,
+                artist = song.artist.name,
+                artwork = song.artworkUrl,
+                onClick = { onSongClick(song) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun EmptyState(
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            modifier = Modifier.fillMaxWidth(0.6f)
+                .padding(bottom = 120.dp),
+            text = "No songs found yet",
+            style = MaterialTheme.typography.labelMedium.copy(
+                lineBreak = LineBreak.Heading,
+                textAlign = TextAlign.Center
+            )
+        )
     }
 }
 
