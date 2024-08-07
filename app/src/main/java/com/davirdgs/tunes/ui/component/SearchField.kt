@@ -23,7 +23,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
@@ -52,7 +51,7 @@ fun SearchField(
             Row(
                 modifier = Modifier
                     .background(
-                        color = Color.LightGray,
+                        color = MaterialTheme.colorScheme.surface,
                         shape = RoundedCornerShape(16.dp)
                     )
                     .fillMaxWidth()
@@ -63,6 +62,7 @@ fun SearchField(
                 Icon(
                     modifier = Modifier.size(28.dp),
                     imageVector = Icons.Sharp.Search,
+                    tint = textStyle.color,
                     contentDescription = null
                 )
                 if (value.isBlank() && !hasFocus) {
