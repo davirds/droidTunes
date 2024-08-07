@@ -4,14 +4,14 @@
     android:viewportWidth="56"
     android:width="40dp">
     <path
-        android:fillColor="#FFCCCCCC"
+        android:fillColor="#FFD7D8CD"
         android:pathData="M28,28m-28,0a28,28 0,1 1,56 0a28,28 0,1 1,-56 0"/>
     <path
-        android:fillColor="#00000000"
+        android:fillColor="#FF2B1B1F"
         android:pathData="M22.152,16.8V39.2"
-        android:strokeColor="#000000" android:strokeWidth="3"/>
+        android:strokeColor="#FF2B1B1F" android:strokeWidth="3"/>
     <path
-        android:fillColor="#00000000"
+        android:fillColor="#FF2B1B1F"
         android:pathData="M33.152,16.8V39.2"
-        android:strokeColor="#000000" android:strokeWidth="3"/>
+        android:strokeColor="#FF2B1B1F" android:strokeWidth="3"/>
 </vector>
