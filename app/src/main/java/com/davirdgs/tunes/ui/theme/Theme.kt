@@ -1,20 +1,17 @@
 package com.davirdgs.tunes.ui.theme
 
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
-)
-
-private val LightColorScheme = lightColorScheme(
+private val ColorTheme = lightColorScheme(
     primary = Purple40,
     secondary = PurpleGrey40,
-    tertiary = Pink40
+    tertiary = Pink40,
+    background = LightStone,
+    onBackground = WarmBlack,
+    surface = Stone,
+    onSurface = DarkStone,
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -28,18 +25,9 @@ private val LightColorScheme = lightColorScheme(
 )
 
 @Composable
-fun AppTheme(
-//    darkTheme: Boolean = isSystemInDarkTheme(),
-    darkTheme: Boolean = false,
-    content: @Composable () -> Unit
-) {
-    val colorScheme = when {
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
-
+fun AppTheme(content: @Composable () -> Unit) {
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = ColorTheme,
         typography = Typography,
         content = content
     )
