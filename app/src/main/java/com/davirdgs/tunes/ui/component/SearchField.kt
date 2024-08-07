@@ -14,9 +14,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -33,8 +39,9 @@ fun SearchField(
     onValueChange: (String) -> Unit,
     onSearch: () -> Unit
 ) {
+    var hasFocus by remember { mutableStateOf(false) }
     BasicTextField(
-        modifier = modifier,
+        modifier = modifier.onFocusChanged { hasFocus = it.hasFocus },
         value = value,
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         keyboardActions = KeyboardActions(onSearch = { onSearch() }),
@@ -58,7 +65,16 @@ fun SearchField(
                     imageVector = Icons.Sharp.Search,
                     contentDescription = null
                 )
-                inputField()
+                if (value.isBlank() && !hasFocus) {
+                    Text(
+                        text = "Search for songs",
+                        style = textStyle.copy(
+                            color = textStyle.color.copy(alpha = 0.5f)
+                        )
+                    )
+                } else {
+                    inputField()
+                }
             }
         }
     )
@@ -69,7 +85,7 @@ fun SearchField(
 private fun SearchInputPreview() {
     AppTheme {
         SearchField(
-            value = "Searching something",
+            value = "",
             onValueChange = {},
             onSearch = {}
         )
