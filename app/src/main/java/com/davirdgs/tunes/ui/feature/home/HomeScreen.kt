@@ -1,16 +1,12 @@
 package com.davirdgs.tunes.ui.feature.home
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,6 +21,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.davirdgs.tunes.data.model.Song
 import com.davirdgs.tunes.ui.component.SearchField
+import com.davirdgs.tunes.ui.component.SongsList
 import com.davirdgs.tunes.ui.songsMock
 import com.davirdgs.tunes.ui.theme.AppTheme
 
@@ -84,29 +81,6 @@ internal fun HomeScreen(
             SongsList(
                 songs = uiState.songs,
                 onSongClick = onSongClick
-            )
-        }
-    }
-}
-
-@Composable
-private fun SongsList(
-    modifier: Modifier = Modifier,
-    songs: List<Song>,
-    onSongClick: (Song) -> Unit
-) {
-    LazyColumn(
-        modifier = modifier
-            .fillMaxSize(),
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp)
-    ) {
-        items(songs) { song ->
-            SongItem(
-                name = song.name,
-                artist = song.artist.name,
-                artwork = song.artworkUrl,
-                onClick = { onSongClick(song) }
             )
         }
     }
