@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import com.davirdgs.tunes.base.jsonParam
+import com.davirdgs.tunes.data.TunesRepository
 import com.davirdgs.tunes.data.model.Song
 import com.davirdgs.tunes.player.PlayerExecutor
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +21,8 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 internal class PlayerViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val playerExecutor: PlayerExecutor
+    private val playerExecutor: PlayerExecutor,
+    private val tunesRepository: TunesRepository
 ) : ViewModel() {
     private val songParam by lazy { savedStateHandle.jsonParam<SongParam>(SONG_PARAM) }
     private var _uiState by mutableStateOf(PlayerUiState(songParam))
@@ -28,8 +30,18 @@ internal class PlayerViewModel @Inject constructor(
         get() = _uiState
 
     init {
+        loadAlbumSongs()
         subscribePlayerEvents()
         startPlayer(_uiState.song)
+    }
+
+    private fun loadAlbumSongs() {
+        viewModelScope.launch {
+            tunesRepository.getAlbum(_uiState.song.collection.id)
+                .collectLatest {
+                    _uiState = _uiState.copy(album = it)
+                }
+        }
     }
 
     private fun subscribePlayerEvents() {
@@ -70,16 +82,26 @@ internal class PlayerViewModel @Inject constructor(
         val position = (_uiState.duration * percentage).toLong()
         playerExecutor.seekTo(position)
     }
+
+    fun openAlbumBottomSheet() {
+        _uiState = _uiState.copy(showBottomSheet = true)
+    }
+
+    fun closeAlbumBottomSheet() {
+        _uiState = _uiState.copy(showBottomSheet = false)
+    }
 }
 
 internal data class PlayerUiState(
     val song: Song,
+    val album: List<Song> = emptyList(),
     val isPlaying: Boolean = false,
     val position: Long = 0L,
     val duration: Long = 0L,
     val progress: Float = 0f,
     val showLoading: Boolean = false,
-    val showError: Boolean = false
+    val showError: Boolean = false,
+    val showBottomSheet: Boolean = false,
 ) {
     constructor(songParam: SongParam) : this(song = songParam.toSong())
 }
