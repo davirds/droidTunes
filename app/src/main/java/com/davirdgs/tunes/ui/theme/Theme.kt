@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 private val ColorTheme = lightColorScheme(
     primary = Purple40,
     secondary = PurpleGrey40,
+    onPrimaryContainer = LightStone,
     tertiary = Pink40,
     background = LightStone,
     onBackground = WarmBlack,
