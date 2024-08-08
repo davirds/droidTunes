@@ -22,7 +22,7 @@ internal data class Track(
     @SerialName("artworkUrl100")
     val artworkUrl100: String,
     @SerialName("artworkUrl30")
-    val artworkUrl30: String,
+    val artworkUrl30: String? = null,
     @SerialName("artworkUrl60")
     val artworkUrl60: String,
     @SerialName("collectionArtistId")
@@ -48,37 +48,37 @@ internal data class Track(
     @SerialName("currency")
     val currency: String,
     @SerialName("discCount")
-    val discCount: Int,
+    val discCount: Int? = null,
     @SerialName("discNumber")
-    val discNumber: Int,
+    val discNumber: Int? = null,
     @SerialName("isStreamable")
-    val isStreamable: Boolean,
+    val isStreamable: Boolean = false,
     @SerialName("kind")
-    val kind: String,
+    val kind: String? = null,
     @SerialName("previewUrl")
-    val previewUrl: String,
+    val previewUrl: String? = null,
     @SerialName("primaryGenreName")
     val primaryGenreName: String,
     @SerialName("releaseDate")
     val releaseDate: String,
     @SerialName("trackCensoredName")
-    val trackCensoredName: String,
+    val trackCensoredName: String? = null,
     @SerialName("trackCount")
     val trackCount: Int,
     @SerialName("trackExplicitness")
-    val trackExplicitness: String,
+    val trackExplicitness: String? = null,
     @SerialName("trackId")
-    val trackId: Int,
+    val trackId: Int? = null,
     @SerialName("trackName")
-    val trackName: String,
+    val trackName: String? = null,
     @SerialName("trackNumber")
-    val trackNumber: Int,
+    val trackNumber: Int? = null,
     @SerialName("trackPrice")
-    val trackPrice: Double,
+    val trackPrice: Double? = null,
     @SerialName("trackTimeMillis")
-    val trackTimeMillis: Int,
+    val trackTimeMillis: Int? = null,
     @SerialName("trackViewUrl")
-    val trackViewUrl: String,
+    val trackViewUrl: String? = null,
     @SerialName("wrapperType")
     val wrapperType: String
 )

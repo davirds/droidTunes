@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.flow
 
 interface TunesRepository {
     fun searchSongs(query: String): Flow<List<Song>>
+    fun getAlbum(albumId: Int): Flow<List<Song>>
 }
 
 internal class TunesRepositoryImpl @Inject constructor(
@@ -31,20 +32,32 @@ internal class TunesRepositoryImpl @Inject constructor(
             e.printStackTrace()
         }
     }
+
+    override fun getAlbum(albumId: Int) = flow {
+        try {
+            val response = remoteSource.lookup(id = albumId,)
+            emit(response.toSongList())
+        } catch (e: Throwable) {
+            // TODO handle the error based on the type
+            e.printStackTrace()
+        }
+    }
 }
 
 private fun BaseResponse<Track>.toSongList(): List<Song> =
-    results.map(Track::toSongList)
+    results
+        .filter { it.kind == "song" }
+        .map(Track::toSongList)
 
 private fun Track.toSongList() =
     Song(
         artist = toArtist(),
         collection = toCollection(),
         artworkUrl = artworkUrl100,
-        id = trackId,
-        name = trackName,
-        timeMillis = trackTimeMillis,
-        previewUrl = previewUrl
+        id = trackId!!,
+        name = trackName!!,
+        timeMillis = trackTimeMillis!!,
+        previewUrl = previewUrl!!
     )
 
 private fun Track.toArtist() =

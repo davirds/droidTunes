@@ -14,4 +14,10 @@ internal interface ApiService {
         @Query("limit") limit: Int,
         @Query("offset") offset: Int,
     ): BaseResponse<Track>
+
+    @GET("/lookup?id=974485462&entity=song")
+    suspend fun lookup(
+        @Query("id") id: Int,
+        @Query("entity") entity: String = "song",
+    ): BaseResponse<Track>
 }
