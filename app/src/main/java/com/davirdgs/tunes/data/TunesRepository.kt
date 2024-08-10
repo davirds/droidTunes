@@ -35,7 +35,7 @@ internal class TunesRepositoryImpl @Inject constructor(
 
     override fun getAlbum(albumId: Int) = flow {
         try {
-            val response = remoteSource.lookup(id = albumId,)
+            val response = remoteSource.lookup(id = albumId)
             emit(response.toSongList())
         } catch (e: Throwable) {
             // TODO handle the error based on the type
@@ -47,9 +47,9 @@ internal class TunesRepositoryImpl @Inject constructor(
 private fun BaseResponse<Track>.toSongList(): List<Song> =
     results
         .filter { it.kind == "song" }
-        .map(Track::toSongList)
+        .map(Track::toSong)
 
-private fun Track.toSongList() =
+private fun Track.toSong() =
     Song(
         artist = toArtist(),
         collection = toCollection(),
