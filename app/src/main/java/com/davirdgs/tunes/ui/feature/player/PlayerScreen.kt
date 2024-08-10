@@ -7,28 +7,30 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material3.BottomSheetDefaults
+import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SheetState
-import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.SheetValue
+import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -36,11 +38,10 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import coil.compose.rememberAsyncImagePainter
-import com.davirdgs.tunes.R
 import com.davirdgs.tunes.data.model.Song
-import com.davirdgs.tunes.ui.component.PlayerSeekProgress
 import com.davirdgs.tunes.ui.songMock
 import com.davirdgs.tunes.ui.theme.AppTheme
+import kotlinx.coroutines.launch
 
 internal const val SONG_PARAM = "song"
 private const val PLAYER_PATH = "player"
@@ -56,14 +57,24 @@ fun NavGraphBuilder.playerScreen(
     navigateBack: () -> Unit,
 ) {
     composable(route = PLAYER_SCREEN) {
-        val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        val scope = rememberCoroutineScope()
+        val scaffoldState = rememberBottomSheetScaffoldState(
+            bottomSheetState = rememberStandardBottomSheetState(
+                skipHiddenState = false,
+                initialValue = SheetValue.Hidden
+            )
+        )
         val viewModel = hiltViewModel<PlayerViewModel>()
         PlayerScreen(
             uiState = viewModel.uiState,
-            bottomSheetState = bottomSheetState,
+            scaffoldState = scaffoldState,
             onNavigateBack = navigateBack,
-            onOpenAlbum = viewModel::openAlbumBottomSheet,
-            onCloseAlbum = viewModel::closeAlbumBottomSheet,
+            onOpenAlbum = { scope.launch { scaffoldState.bottomSheetState.expand() } },
+            onCloseAlbum = { scope.launch { scaffoldState.bottomSheetState.hide() } },
+            onPLaySong = { song ->
+                scope.launch { scaffoldState.bottomSheetState.hide() }
+                viewModel.playSong(song)
+            },
             onSeekChange = viewModel::seekTo,
             onPlay = viewModel::play,
             onPause = viewModel::pause,
@@ -77,11 +88,62 @@ fun NavGraphBuilder.playerScreen(
 @Composable
 private fun PlayerScreen(
     modifier: Modifier = Modifier,
-    bottomSheetState: SheetState,
+    scaffoldState: BottomSheetScaffoldState,
     uiState: PlayerUiState,
     onNavigateBack: () -> Unit,
     onOpenAlbum: () -> Unit,
     onCloseAlbum: () -> Unit,
+    onPLaySong: (Song) -> Unit,
+    onSeekChange: (Float) -> Unit,
+    onPlay: () -> Unit,
+    onPause: () -> Unit,
+    onForward: () -> Unit,
+    onBackward: () -> Unit,
+) {
+    BottomSheetScaffold(
+        modifier = modifier,
+        scaffoldState = scaffoldState,
+        sheetPeekHeight = 0.dp,
+        containerColor = MaterialTheme.colorScheme.background,
+        topBar = {
+            PlayerHeader(
+                modifier = Modifier.statusBarsPadding(),
+                onBackClick = onNavigateBack,
+                onOptionClick = onOpenAlbum,
+            )
+        },
+        content = { padding ->
+            PlayerContent(
+                modifier = Modifier.padding(padding),
+                uiState = uiState,
+                onSeekChange = onSeekChange,
+                onPlay = onPlay,
+                onPause = onPause,
+                onForward = onForward,
+                onBackward = onBackward,
+            )
+        },
+        sheetShadowElevation = 16.dp,
+        sheetContentColor = MaterialTheme.colorScheme.onBackground,
+        sheetContainerColor = MaterialTheme.colorScheme.background,
+        sheetDragHandle = {
+            BottomSheetDefaults.DragHandle(color = MaterialTheme.colorScheme.surface)
+        },
+        sheetContent = {
+            AlbumContent(
+                albumName = uiState.song.collection.name,
+                artistName = uiState.song.artist.name,
+                album = uiState.album,
+                onPlaySong = onPLaySong
+            )
+        }
+    )
+}
+
+@Composable
+private fun PlayerContent(
+    modifier: Modifier = Modifier,
+    uiState: PlayerUiState,
     onSeekChange: (Float) -> Unit,
     onPlay: () -> Unit,
     onPause: () -> Unit,
@@ -89,23 +151,19 @@ private fun PlayerScreen(
     onBackward: () -> Unit,
 ) {
     Column(
-        modifier = modifier.statusBarsPadding(),
+        modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        PlayerHeader(
-            onBackClick = onNavigateBack,
-            onOptionClick = onOpenAlbum,
-        )
-        Box(modifier = Modifier.weight(0.5f))
+        Box(modifier = Modifier.weight(0.6f))
         Image(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .size(200.dp)
                 .clip(RoundedCornerShape(8.dp)),
-            painter = rememberAsyncImagePainter(model = uiState.song.artworkUrl),
+            painter = rememberAsyncImagePainter(model = uiState.song.largeArtWorkUrl),
             contentDescription = "Artwork"
         )
-        Box(modifier = Modifier.weight(0.5f))
+        Spacer(modifier = Modifier.weight(0.4f))
         PlayerController(
             modifier = Modifier,
             songName = uiState.song.name,
@@ -120,17 +178,10 @@ private fun PlayerScreen(
             onForward = onForward,
             onBackward = onBackward
         )
-        Box(modifier = Modifier.size(64.dp))
-    }
-
-    if (uiState.showBottomSheet) {
-        AlbumBottomSheet(
-            modifier = Modifier,
-            bottomSheetState = bottomSheetState,
-            albumName = uiState.song.collection.name,
-            artistName = uiState.song.artist.name,
-            album = uiState.album,
-            onDismiss = onCloseAlbum
+        Spacer(
+            modifier = Modifier
+                .navigationBarsPadding()
+                .size(32.dp)
         )
     }
 }
@@ -163,96 +214,10 @@ private fun PlayerHeader(
                 .clickable { onOptionClick() }
                 .padding(8.dp)
                 .size(32.dp),
-            imageVector = Icons.Filled.MoreVert,
+            imageVector = Icons.AutoMirrored.Filled.List,
             tint = MaterialTheme.colorScheme.onBackground,
             contentDescription = "options"
         )
-    }
-}
-
-@Composable
-private fun PlayerController(
-    modifier: Modifier = Modifier,
-    songName: String,
-    artistName: String,
-    position: Long,
-    duration: Long,
-    progress: Float,
-    isPlaying: Boolean,
-    onSeekChange: (Float) -> Unit,
-    onPlay: () -> Unit,
-    onPause: () -> Unit,
-    onForward: () -> Unit,
-    onBackward: () -> Unit
-) {
-    val playerAction = if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play
-    val playerActionDescription = if (isPlaying) "pause" else "play"
-    val playerActionClick = if (isPlaying) onPause else onPlay
-
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = songName,
-            style = MaterialTheme.typography.labelLarge.copy(
-                textAlign = TextAlign.Center
-            )
-        )
-        Text(
-            text = artistName,
-            style = MaterialTheme.typography.labelMedium.copy(
-                fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.Center
-            )
-        )
-        PlayerSeekProgress(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp),
-            backgroundColor = MaterialTheme.colorScheme.surface,
-            progressColor = MaterialTheme.colorScheme.onSurface,
-            thumbColor = MaterialTheme.colorScheme.onBackground,
-            position = position,
-            duration = duration,
-            progress = progress,
-            onSeekChange = onSeekChange
-        )
-        Spacer(modifier = Modifier.size(8.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterHorizontally),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Image(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(50))
-                    .clickable { onBackward() }
-                    .padding(8.dp)
-                    .size(32.dp),
-                painter = painterResource(id = R.drawable.ic_backward),
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
-                contentDescription = "backward"
-            )
-            Image(
-                modifier = Modifier
-                    .size(52.dp)
-                    .clip(RoundedCornerShape(50))
-                    .clickable { playerActionClick() },
-                painter = painterResource(id = playerAction),
-                contentDescription = playerActionDescription
-            )
-            Image(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(50))
-                    .clickable { onForward() }
-                    .padding(8.dp)
-                    .size(32.dp),
-                painter = painterResource(id = R.drawable.ic_forward),
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
-                contentDescription = "forward"
-            )
-        }
     }
 }
 
@@ -263,8 +228,14 @@ private fun PlayerScreenPreview() {
     val song = songMock()
     AppTheme {
         PlayerScreen(
-            bottomSheetState = rememberModalBottomSheetState(),
+            scaffoldState = rememberBottomSheetScaffoldState(
+                bottomSheetState = rememberStandardBottomSheetState(
+                    initialValue = SheetValue.Hidden,
+                    skipHiddenState = false
+                )
+            ),
             uiState = PlayerUiState(song = song),
+            onPLaySong = { },
             onNavigateBack = { },
             onOpenAlbum = { },
             onCloseAlbum = { },

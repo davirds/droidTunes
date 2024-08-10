@@ -25,7 +25,7 @@ internal class PlayerViewModel @Inject constructor(
     private val tunesRepository: TunesRepository
 ) : ViewModel() {
     private val songParam by lazy { savedStateHandle.jsonParam<SongParam>(SONG_PARAM) }
-    private var _uiState by mutableStateOf(PlayerUiState(songParam))
+    private var _uiState by mutableStateOf(PlayerUiState(songParam.toSong()))
     val uiState: PlayerUiState
         get() = _uiState
 
@@ -60,6 +60,11 @@ internal class PlayerViewModel @Inject constructor(
     private fun startPlayer(song: Song) {
         val mediaItem = song.toMediaItem()
         playerExecutor.startPlayer(mediaItem)
+    }
+
+    fun playSong(song: Song) {
+        _uiState = _uiState.copy(song = song)
+        startPlayer(_uiState.song)
     }
 
     fun play() {
@@ -110,7 +115,7 @@ private fun Song.toMediaItem() = MediaItem.Builder()
     .setMediaMetadata(
         MediaMetadata.Builder()
             .setTitle(name)
-            .setArtworkUri(Uri.parse(artworkUrl))
+            .setArtworkUri(Uri.parse(largeArtWorkUrl))
             .setArtist(artist.name)
             .setAlbumTitle(collection.name)
             .build()
