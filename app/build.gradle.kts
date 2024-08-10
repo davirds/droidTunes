@@ -1,5 +1,5 @@
 plugins {
-    kotlin("kapt")
+    alias(libs.plugins.google.ksp)
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
@@ -65,10 +65,6 @@ composeCompiler {
     enableStrongSkippingMode = true
 }
 
-kapt {
-    correctErrorTypes = true
-}
-
 dependencies {
     val composeBom = platform(libs.androidx.compose.bom)
 
@@ -97,7 +93,7 @@ dependencies {
 
     implementation(libs.hilt.android)
     implementation(libs.hilt.android.compose)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
 
     implementation(platform(libs.okhttp.bom))
     implementation(libs.okhttp.client)
@@ -118,7 +114,7 @@ dependencies {
     testImplementation(libs.junit)
 
     testImplementation(libs.hilt.android.testing)
-    kaptTest(libs.hilt.compiler)
+    kspTest(libs.hilt.compiler)
     // end Unit test
 
     // Android Test
@@ -126,7 +122,7 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     androidTestImplementation(libs.hilt.android.testing)
-    kaptAndroidTest(libs.hilt.compiler)
+    kspAndroidTest(libs.hilt.compiler)
 
     androidTestImplementation(composeBom)
     androidTestImplementation(libs.androidx.compose.ui.test)
