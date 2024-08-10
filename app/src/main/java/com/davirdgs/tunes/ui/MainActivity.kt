@@ -18,11 +18,7 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
-        setWindowContent {
-            Application {
-                Navigation()
-            }
-        }
+        setWindowContent { Application { Navigation() } }
     }
 }
 
@@ -41,7 +37,7 @@ internal fun Application(
 
 @Preview(showBackground = true)
 @Composable
-fun ApplicationPreview() {
+private fun ApplicationPreview() {
     Application {
         Navigation()
     }
