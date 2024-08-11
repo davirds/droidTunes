@@ -44,9 +44,9 @@ internal fun PlayerController(
     val playerAction = if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play
     val playerActionClick = if (isPlaying) onPause else onPlay
     val playerActionDescription = if (isPlaying) {
-        stringResource(id = R.string.content_description_play)
-    } else {
         stringResource(id = R.string.content_description_pause)
+    } else {
+        stringResource(id = R.string.content_description_play)
     }
 
     Column(

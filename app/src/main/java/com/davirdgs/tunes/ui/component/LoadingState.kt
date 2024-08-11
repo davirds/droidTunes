@@ -23,7 +23,7 @@ fun LoadingState(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .testTag(stringResource(id = R.string.content_description_loading)),
+            .testTag(stringResource(id = R.string.test_tag_loading)),
         contentAlignment = Alignment.Center
     ) {
         CircularProgressIndicator(

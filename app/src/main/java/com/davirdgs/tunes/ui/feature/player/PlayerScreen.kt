@@ -73,7 +73,6 @@ fun NavGraphBuilder.playerScreen(
             onNavigateBack = navigateBack,
             onRetry = viewModel::retry,
             onOpenAlbum = { scope.launch { scaffoldState.bottomSheetState.expand() } },
-            onCloseAlbum = { scope.launch { scaffoldState.bottomSheetState.hide() } },
             onPLaySong = { song ->
                 scope.launch { scaffoldState.bottomSheetState.hide() }
                 viewModel.playSong(song)
@@ -89,14 +88,13 @@ fun NavGraphBuilder.playerScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun PlayerScreen(
+internal fun PlayerScreen(
     modifier: Modifier = Modifier,
     scaffoldState: BottomSheetScaffoldState,
     uiState: PlayerUiState,
     onRetry: () -> Unit,
     onNavigateBack: () -> Unit,
     onOpenAlbum: () -> Unit,
-    onCloseAlbum: () -> Unit,
     onPLaySong: (Song) -> Unit,
     onSeekChange: (Float) -> Unit,
     onPlay: () -> Unit,
@@ -243,7 +241,6 @@ private fun PlayerScreenPreview() {
             onPLaySong = { },
             onNavigateBack = { },
             onOpenAlbum = { },
-            onCloseAlbum = { },
             onSeekChange = { },
             onPlay = { },
             onPause = { },

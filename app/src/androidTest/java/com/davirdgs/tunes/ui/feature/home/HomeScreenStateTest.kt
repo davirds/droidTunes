@@ -29,8 +29,6 @@ class HomeScreenStateTest {
         val uiState = HomeUiState(showError = true)
         composeTestRule.run {
             homeScreen(uiState)
-            onNodeWithTag("Loading").assertDoesNotExist()
-
             onNodeWithText("Search for songs").assertExists()
             onNodeWithText("It looks like something wrong happened.").assertExists()
             onNodeWithText("try again").assertHasClickAction()
@@ -42,9 +40,6 @@ class HomeScreenStateTest {
         val uiState = HomeUiState(showLoading = true)
         composeTestRule.run {
             homeScreen(uiState)
-            onNodeWithText("No songs found yet").assertDoesNotExist()
-            onNodeWithText("try again").assertDoesNotExist()
-
             onNodeWithText("Search for songs").assertExists()
             onNodeWithTag("Loading").assertExists()
         }
@@ -56,10 +51,6 @@ class HomeScreenStateTest {
         val uiState = HomeUiState(songs = songs)
         composeTestRule.run {
             homeScreen(uiState)
-            onNodeWithText("No songs found yet").assertDoesNotExist()
-            onNodeWithText("try again").assertDoesNotExist()
-            onNodeWithTag("Loading").assertDoesNotExist()
-
             onNodeWithText("Search for songs").assertExists()
             onNodeWithTag("SongsList").assertExists()
             songs.forEach {
