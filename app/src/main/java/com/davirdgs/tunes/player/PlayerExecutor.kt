@@ -20,8 +20,6 @@ interface PlayerExecutor {
     fun startPlayer(mediaItem: MediaItem, startPositionMs: Long = 0L)
     fun play()
     fun pause()
-    fun seekToNext()
-    fun seekToPrevious()
     fun seekTo(position: Long)
     fun seekForward()
     fun seekBack()
@@ -77,14 +75,6 @@ internal class PlayerExecutorImpl @Inject constructor(
 
     override fun pause() {
         _player?.run { pause() }
-    }
-
-    override fun seekToNext() {
-        _player?.run { seekToNext() }
-    }
-
-    override fun seekToPrevious() {
-        _player?.run { seekToPrevious() }
     }
 
     override fun seekForward() {
@@ -173,10 +163,7 @@ data class MediaState(
     val isPlaying: Boolean = false,
     val isLoading: Boolean = true,
     val isActive: Boolean = false
-) {
-    val completionProgress: Int
-        get() = (progress * 100).toInt()
-}
+)
 
 private fun ListenableFuture<MediaController>.use(
     executor: Executor = MoreExecutors.directExecutor(),
