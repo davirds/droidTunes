@@ -36,6 +36,7 @@ fun NavGraphBuilder.homeScreen(
             uiState = viewModel.uiState,
             onQueryChange = viewModel::onQueryChange,
             onSearch = viewModel::onSearch,
+            onLoadMore = viewModel::loadMore,
             onSongClick = navigateToPlayer
         )
     }
@@ -47,7 +48,8 @@ internal fun HomeScreen(
     uiState: HomeUiState,
     onQueryChange: (String) -> Unit,
     onSearch: () -> Unit,
-    onSongClick: (Song) -> Unit
+    onSongClick: (Song) -> Unit,
+    onLoadMore: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -80,7 +82,8 @@ internal fun HomeScreen(
         } else {
             SongsList(
                 songs = uiState.songs,
-                onSongClick = onSongClick
+                onSongClick = onSongClick,
+                onLoadMore = onLoadMore
             )
         }
     }
@@ -115,6 +118,7 @@ private fun HomeScreenPreview() {
             uiState = HomeUiState(songs = songs),
             onQueryChange = { },
             onSearch = { },
+            onLoadMore = { },
             onSongClick = { }
         )
     }

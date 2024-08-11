@@ -53,7 +53,9 @@ internal class HomeViewModel @Inject constructor(
             tunesRepository.searchSongs(query = _uiState.query, offset = _uiState.songs.size)
                 .collectLatest { result ->
                     result.onSuccess { songs ->
-                        _uiState = _uiState.copy(songs = _uiState.songs + songs)
+                        if (songs.isNotEmpty()) {
+                            _uiState = _uiState.copy(songs = _uiState.songs + songs)
+                        }
                     }
                 }
         }
