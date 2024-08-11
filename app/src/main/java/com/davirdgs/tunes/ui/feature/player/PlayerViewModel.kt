@@ -61,6 +61,10 @@ internal class PlayerViewModel @Inject constructor(
         playerExecutor.seekTo(position)
     }
 
+    fun retry() {
+        loadAlbumSongs()
+    }
+
     private fun startPlayer(song: Song) {
         val mediaItem = song.toMediaItem()
         playerExecutor.startPlayer(mediaItem)
@@ -99,16 +103,22 @@ internal class PlayerViewModel @Inject constructor(
 
 internal data class PlayerUiState(
     val song: Song,
-    val album: List<Song> = emptyList(),
     val isPlaying: Boolean = false,
     val position: Long = 0L,
     val duration: Long = 0L,
     val progress: Float = 0f,
     val showPlayerLoading: Boolean = false,
     val showPlayerError: Boolean = false,
-    val showAlbumLoading: Boolean = false,
-    val showAlbumError: Boolean = false
-)
+    override val album: List<Song> = emptyList(),
+    override val showAlbumLoading: Boolean = false,
+    override val showAlbumError: Boolean = false
+) : AlbumUiState
+
+internal interface AlbumUiState {
+    val album: List<Song>
+    val showAlbumLoading: Boolean
+    val showAlbumError: Boolean
+}
 
 private fun Song.toMediaItem() = MediaItem.Builder()
     .setMediaMetadata(

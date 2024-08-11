@@ -1,30 +1,24 @@
 package com.davirdgs.tunes.ui.feature.home
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.LineBreak
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.davirdgs.tunes.data.model.Song
+import com.davirdgs.tunes.ui.component.EmptyState
+import com.davirdgs.tunes.ui.component.ErrorState
+import com.davirdgs.tunes.ui.component.LoadingState
 import com.davirdgs.tunes.ui.component.SearchField
 import com.davirdgs.tunes.ui.component.SongsList
 import com.davirdgs.tunes.ui.songsMock
@@ -94,88 +88,6 @@ internal fun HomeScreen(
             uiState.showError -> ErrorState(onRetry = onRetry)
             else -> EmptyState()
         }
-    }
-}
-
-@Composable
-private fun LoadingState(
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator(
-            modifier = Modifier
-                .imePadding()
-                .size(48.dp)
-                .padding(bottom = 120.dp),
-        )
-    }
-}
-
-@Composable
-private fun ErrorState(
-    modifier: Modifier = Modifier,
-    onRetry: () -> Unit
-) {
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            modifier = Modifier
-                .imePadding()
-                .padding(bottom = 120.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                modifier = Modifier
-                    .imePadding()
-                    .fillMaxWidth(0.6f),
-                text = "It looks like something wrong happened.",
-                style = MaterialTheme.typography.labelMedium.copy(
-                    lineBreak = LineBreak.Heading,
-                    textAlign = TextAlign.Center
-                )
-            )
-            Spacer(modifier = Modifier.size(8.dp))
-            Button(
-                modifier = Modifier
-                    .imePadding(),
-                onClick = onRetry,
-                content = {
-                    Text(
-                        text = "try again",
-                        style = MaterialTheme.typography.labelMedium.copy(
-                            textAlign = TextAlign.Center
-                        )
-                    )
-                }
-            )
-        }
-    }
-}
-
-@Composable
-private fun EmptyState(
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            modifier = Modifier
-                .imePadding()
-                .fillMaxWidth(0.6f)
-                .padding(bottom = 120.dp),
-            text = "No songs found yet",
-            style = MaterialTheme.typography.labelMedium.copy(
-                lineBreak = LineBreak.Heading,
-                textAlign = TextAlign.Center
-            )
-        )
     }
 }
 

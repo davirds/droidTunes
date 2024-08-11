@@ -16,6 +16,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.davirdgs.tunes.data.model.Song
+import com.davirdgs.tunes.ui.component.EmptyState
+import com.davirdgs.tunes.ui.component.ErrorState
+import com.davirdgs.tunes.ui.component.LoadingState
 import com.davirdgs.tunes.ui.component.SongsList
 import com.davirdgs.tunes.ui.songsMock
 import com.davirdgs.tunes.ui.theme.AppTheme
@@ -25,8 +28,9 @@ internal fun AlbumContent(
     modifier: Modifier = Modifier,
     albumName: String,
     artistName: String,
-    album: List<Song>,
-    onPlaySong: (Song) -> Unit
+    uiState: AlbumUiState,
+    onPlaySong: (Song) -> Unit,
+    onRetry: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -48,11 +52,16 @@ internal fun AlbumContent(
             )
         )
         Spacer(modifier = Modifier.size(16.dp))
-        SongsList(
-            modifier = Modifier.fillMaxSize(),
-            songs = album,
-            onSongClick = onPlaySong
-        )
+        when {
+            uiState.album.isNotEmpty() -> SongsList(
+                modifier = Modifier.fillMaxSize(),
+                songs = uiState.album,
+                onSongClick = onPlaySong
+            )
+            uiState.showAlbumError -> ErrorState(onRetry = onRetry)
+            uiState.showAlbumLoading -> LoadingState()
+            else -> EmptyState(message = "No Album found")
+        }
     }
 }
 
@@ -63,8 +72,13 @@ private fun AlbumContentPreview() {
         AlbumContent(
             albumName = "Something",
             artistName = "Someone",
-            album = songsMock(10),
-            onPlaySong = {}
+            uiState = object : AlbumUiState {
+                override val album: List<Song> = songsMock(5)
+                override val showAlbumLoading: Boolean = false
+                override val showAlbumError: Boolean = false
+            },
+            onRetry = { },
+            onPlaySong = { }
         )
     }
 }

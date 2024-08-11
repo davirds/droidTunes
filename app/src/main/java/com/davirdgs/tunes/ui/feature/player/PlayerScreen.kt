@@ -69,6 +69,7 @@ fun NavGraphBuilder.playerScreen(
             uiState = viewModel.uiState,
             scaffoldState = scaffoldState,
             onNavigateBack = navigateBack,
+            onRetry = viewModel::retry,
             onOpenAlbum = { scope.launch { scaffoldState.bottomSheetState.expand() } },
             onCloseAlbum = { scope.launch { scaffoldState.bottomSheetState.hide() } },
             onPLaySong = { song ->
@@ -90,6 +91,7 @@ private fun PlayerScreen(
     modifier: Modifier = Modifier,
     scaffoldState: BottomSheetScaffoldState,
     uiState: PlayerUiState,
+    onRetry: () -> Unit,
     onNavigateBack: () -> Unit,
     onOpenAlbum: () -> Unit,
     onCloseAlbum: () -> Unit,
@@ -133,7 +135,8 @@ private fun PlayerScreen(
             AlbumContent(
                 albumName = uiState.song.collection.name,
                 artistName = uiState.song.artist.name,
-                album = uiState.album,
+                uiState = uiState,
+                onRetry = onRetry,
                 onPlaySong = onPLaySong
             )
         }
@@ -243,7 +246,8 @@ private fun PlayerScreenPreview() {
             onPlay = { },
             onPause = { },
             onForward = { },
-            onBackward = { }
+            onBackward = { },
+            onRetry = { }
         )
     }
 }
