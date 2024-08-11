@@ -17,7 +17,10 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.davirdgs.tunes.R
 import com.davirdgs.tunes.data.model.Song
 import com.davirdgs.tunes.ui.feature.home.SongItem
 
@@ -39,6 +42,7 @@ fun SongsList(
 
     LazyColumn(
         modifier = modifier
+            .testTag(stringResource(id = R.string.test_tag_songs_list))
             .fillMaxSize()
             .imePadding(),
         state = state,

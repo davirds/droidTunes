@@ -14,4 +14,7 @@
     <string name="content_description_pause">Pause</string>
     <string name="content_description_backward">Backward</string>
     <string name="content_description_forward">Forward</string>
+
+    <string name="test_tag_loading">Loading</string>
+    <string name="test_tag_songs_list">SongsList</string>
 </resources>
