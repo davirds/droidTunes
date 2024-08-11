@@ -9,17 +9,15 @@ import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performScrollToNode
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.davirdgs.tunes.ui.songsMock
 import com.davirdgs.tunes.ui.theme.AppTheme
-import dagger.hilt.android.testing.HiltAndroidRule
-import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
 
-@HiltAndroidTest
+@RunWith(AndroidJUnit4::class)
 class HomeScreenStateTest {
-    @get:Rule(order = 0)
-    var hiltRule = HiltAndroidRule(this)
 
     @get:Rule
     val composeTestRule = createComposeRule()

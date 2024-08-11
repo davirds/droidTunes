@@ -17,20 +17,17 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToIndex
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.davirdgs.tunes.ui.songMock
 import com.davirdgs.tunes.ui.songsMock
 import com.davirdgs.tunes.ui.theme.AppTheme
-import dagger.hilt.android.testing.HiltAndroidRule
-import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.launch
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
 
-@HiltAndroidTest
+@RunWith(AndroidJUnit4::class)
 class PlayerScreenStateTest {
-    @get:Rule(order = 0)
-    var hiltRule = HiltAndroidRule(this)
-
     @get:Rule
     val composeTestRule = createComposeRule()
 

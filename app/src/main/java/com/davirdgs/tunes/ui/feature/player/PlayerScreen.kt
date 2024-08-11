@@ -1,6 +1,7 @@
 package com.davirdgs.tunes.ui.feature.player
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -198,6 +199,7 @@ private fun PlayerHeader(
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .background(color = MaterialTheme.colorScheme.background)
             .padding(vertical = 16.dp, horizontal = 4.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
