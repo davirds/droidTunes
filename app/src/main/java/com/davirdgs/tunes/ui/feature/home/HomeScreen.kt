@@ -3,10 +3,15 @@ package com.davirdgs.tunes.ui.feature.home
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,6 +41,7 @@ fun NavGraphBuilder.homeScreen(
             uiState = viewModel.uiState,
             onQueryChange = viewModel::onQueryChange,
             onSearch = viewModel::onSearch,
+            onRetry = viewModel::onSearch,
             onLoadMore = viewModel::loadMore,
             onSongClick = navigateToPlayer
         )
@@ -49,7 +55,8 @@ internal fun HomeScreen(
     onQueryChange: (String) -> Unit,
     onSearch: () -> Unit,
     onSongClick: (Song) -> Unit,
-    onLoadMore: () -> Unit
+    onLoadMore: () -> Unit,
+    onRetry: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -77,13 +84,74 @@ internal fun HomeScreen(
             onSearch = onSearch,
             maxLines = 1,
         )
-        if (uiState.songs.isEmpty()) {
-            EmptyState()
-        } else {
-            SongsList(
+        when {
+            uiState.songs.isNotEmpty() -> SongsList(
                 songs = uiState.songs,
                 onSongClick = onSongClick,
                 onLoadMore = onLoadMore
+            )
+            uiState.showLoading -> LoadingState()
+            uiState.showError -> ErrorState(onRetry = onRetry)
+            else -> EmptyState()
+        }
+    }
+}
+
+@Composable
+private fun LoadingState(
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(
+            modifier = Modifier
+                .imePadding()
+                .size(48.dp)
+                .padding(bottom = 120.dp),
+        )
+    }
+}
+
+@Composable
+private fun ErrorState(
+    modifier: Modifier = Modifier,
+    onRetry: () -> Unit
+) {
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier
+                .imePadding()
+                .padding(bottom = 120.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                modifier = Modifier
+                    .imePadding()
+                    .fillMaxWidth(0.6f),
+                text = "It looks like something wrong happened.",
+                style = MaterialTheme.typography.labelMedium.copy(
+                    lineBreak = LineBreak.Heading,
+                    textAlign = TextAlign.Center
+                )
+            )
+            Spacer(modifier = Modifier.size(8.dp))
+            Button(
+                modifier = Modifier
+                    .imePadding(),
+                onClick = onRetry,
+                content = {
+                    Text(
+                        text = "try again",
+                        style = MaterialTheme.typography.labelMedium.copy(
+                            textAlign = TextAlign.Center
+                        )
+                    )
+                }
             )
         }
     }
@@ -98,7 +166,9 @@ private fun EmptyState(
         contentAlignment = Alignment.Center
     ) {
         Text(
-            modifier = Modifier.fillMaxWidth(0.6f)
+            modifier = Modifier
+                .imePadding()
+                .fillMaxWidth(0.6f)
                 .padding(bottom = 120.dp),
             text = "No songs found yet",
             style = MaterialTheme.typography.labelMedium.copy(
@@ -112,14 +182,15 @@ private fun EmptyState(
 @Preview
 @Composable
 private fun HomeScreenPreview() {
-    val songs = songsMock(5)
+    val songs = songsMock(0)
     AppTheme {
         HomeScreen(
-            uiState = HomeUiState(songs = songs),
+            uiState = HomeUiState(songs = songs, showError = true),
             onQueryChange = { },
             onSearch = { },
+            onRetry = { },
             onLoadMore = { },
-            onSongClick = { }
+            onSongClick = { },
         )
     }
 }
