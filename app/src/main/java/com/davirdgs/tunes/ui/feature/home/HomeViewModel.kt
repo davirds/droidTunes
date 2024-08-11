@@ -1,6 +1,5 @@
 package com.davirdgs.tunes.ui.feature.home
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -28,9 +27,7 @@ internal class HomeViewModel @Inject constructor(
             snapshotFlow { _uiState.query }
                 .debounce(200L)
                 .distinctUntilChanged()
-                .collectLatest {
-                    onSearch(it)
-                }
+                .collectLatest(::onSearch)
         }
     }
 
@@ -39,11 +36,25 @@ internal class HomeViewModel @Inject constructor(
     }
 
     fun onSearch(query: String = _uiState.query) {
+        _uiState = _uiState.copy(showLoading = true)
         viewModelScope.launch {
             tunesRepository.searchSongs(query)
-                .collectLatest { songs ->
-                    Log.d("APP", "result: $songs")
-                    _uiState = _uiState.copy(songs = songs)
+                .collectLatest { result ->
+                    _uiState = result.fold(
+                        onSuccess = { songs -> _uiState.copy(songs = songs, showLoading = false) },
+                        onFailure = { _uiState.copy(showLoading = false, showError = true) }
+                    )
+                }
+        }
+    }
+
+    fun loadMore() {
+        viewModelScope.launch {
+            tunesRepository.searchSongs(query = _uiState.query, offset = _uiState.songs.size)
+                .collectLatest { result ->
+                    result.onSuccess { songs ->
+                        _uiState = _uiState.copy(songs = _uiState.songs + songs)
+                    }
                 }
         }
     }

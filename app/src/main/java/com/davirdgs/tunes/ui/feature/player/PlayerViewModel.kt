@@ -35,33 +35,6 @@ internal class PlayerViewModel @Inject constructor(
         startPlayer(_uiState.song)
     }
 
-    private fun loadAlbumSongs() {
-        viewModelScope.launch {
-            tunesRepository.getAlbum(_uiState.song.collection.id)
-                .collectLatest {
-                    _uiState = _uiState.copy(album = it)
-                }
-        }
-    }
-
-    private fun subscribePlayerEvents() {
-        viewModelScope.launch {
-            playerExecutor.mediaStateFlow.collectLatest { mediaState ->
-                _uiState = _uiState.copy(
-                    isPlaying = mediaState.isPlaying,
-                    position = mediaState.position,
-                    duration = mediaState.duration,
-                    progress = mediaState.progress
-                )
-            }
-        }
-    }
-
-    private fun startPlayer(song: Song) {
-        val mediaItem = song.toMediaItem()
-        playerExecutor.startPlayer(mediaItem)
-    }
-
     fun playSong(song: Song) {
         _uiState = _uiState.copy(song = song)
         startPlayer(_uiState.song)
@@ -88,12 +61,39 @@ internal class PlayerViewModel @Inject constructor(
         playerExecutor.seekTo(position)
     }
 
-    fun openAlbumBottomSheet() {
-        _uiState = _uiState.copy(showBottomSheet = true)
+    private fun startPlayer(song: Song) {
+        val mediaItem = song.toMediaItem()
+        playerExecutor.startPlayer(mediaItem)
     }
 
-    fun closeAlbumBottomSheet() {
-        _uiState = _uiState.copy(showBottomSheet = false)
+    private fun loadAlbumSongs() {
+        _uiState = _uiState.copy(showAlbumLoading = true)
+        viewModelScope.launch {
+            tunesRepository.getAlbum(_uiState.song.collection.id)
+                .collectLatest { result ->
+                    _uiState = result.fold(
+                        onSuccess = { album ->
+                            _uiState.copy(album = album, showAlbumLoading = false)
+                        },
+                        onFailure = {
+                            _uiState.copy(showAlbumLoading = false, showAlbumError = true)
+                        }
+                    )
+                }
+        }
+    }
+
+    private fun subscribePlayerEvents() {
+        viewModelScope.launch {
+            playerExecutor.mediaStateFlow.collectLatest { mediaState ->
+                _uiState = _uiState.copy(
+                    isPlaying = mediaState.isPlaying,
+                    position = mediaState.position,
+                    duration = mediaState.duration,
+                    progress = mediaState.progress
+                )
+            }
+        }
     }
 }
 
@@ -104,12 +104,11 @@ internal data class PlayerUiState(
     val position: Long = 0L,
     val duration: Long = 0L,
     val progress: Float = 0f,
-    val showLoading: Boolean = false,
-    val showError: Boolean = false,
-    val showBottomSheet: Boolean = false,
-) {
-    constructor(songParam: SongParam) : this(song = songParam.toSong())
-}
+    val showPlayerLoading: Boolean = false,
+    val showPlayerError: Boolean = false,
+    val showAlbumLoading: Boolean = false,
+    val showAlbumError: Boolean = false
+)
 
 private fun Song.toMediaItem() = MediaItem.Builder()
     .setMediaMetadata(
