@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">Droid Tunes</string>
+    <string name="home_title">Songs</string>
+    <string name="home_error_title">It looks like something wrong happened.</string>
+    <string name="home_empty_title">No songs found yet</string>
+    <string name="album_empty_title">No album found</string>
+    <string name="try_again">try again</string>
+    <string name="search_field_placeholder">Search for songs</string>
+
+    <string name="content_description_back">Navigate back</string>
+    <string name="content_description_art_work">Artwork</string>
+    <string name="content_description_options">Options</string>
+    <string name="content_description_play">Play</string>
+    <string name="content_description_pause">Pause</string>
+    <string name="content_description_backward">Backward</string>
+    <string name="content_description_forward">Forward</string>
 </resources>

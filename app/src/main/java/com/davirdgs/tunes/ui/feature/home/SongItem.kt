@@ -16,10 +16,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
+import com.davirdgs.tunes.R
 import com.davirdgs.tunes.ui.theme.AppTheme
 
 @Composable
@@ -43,7 +45,7 @@ internal fun SongItem(
                 .size(48.dp)
                 .clip(RoundedCornerShape(8.dp)),
             painter = rememberAsyncImagePainter(model = artwork),
-            contentDescription = "Artwork"
+            contentDescription = stringResource(id = R.string.content_description_art_work)
         )
         Column(
             modifier = Modifier

@@ -14,16 +14,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.davirdgs.tunes.R
 import com.davirdgs.tunes.ui.theme.AppTheme
 
 @Composable
 fun ErrorState(
     modifier: Modifier = Modifier,
-    message: String = "It looks like something wrong happened.",
+    message: String = stringResource(id = R.string.home_error_title),
     onRetry: () -> Unit
 ) {
     Box(
@@ -53,7 +55,7 @@ fun ErrorState(
                 onClick = onRetry,
                 content = {
                     Text(
-                        text = "try again",
+                        text = stringResource(id = R.string.try_again),
                         style = MaterialTheme.typography.labelMedium.copy(
                             textAlign = TextAlign.Center
                         )

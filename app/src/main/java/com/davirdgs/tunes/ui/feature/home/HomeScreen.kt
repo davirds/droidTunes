@@ -10,11 +10,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.davirdgs.tunes.R
 import com.davirdgs.tunes.data.model.Song
 import com.davirdgs.tunes.ui.component.EmptyState
 import com.davirdgs.tunes.ui.component.ErrorState
@@ -66,7 +68,7 @@ internal fun HomeScreen(
                     start = 16.dp,
                     end = 16.dp,
                 ),
-            text = "Songs",
+            text = stringResource(id = R.string.home_title),
             style = MaterialTheme.typography.titleLarge
         )
         SearchField(
@@ -86,7 +88,7 @@ internal fun HomeScreen(
             )
             uiState.showLoading -> LoadingState()
             uiState.showError -> ErrorState(onRetry = onRetry)
-            else -> EmptyState()
+            else -> EmptyState(message = stringResource(id = R.string.home_empty_title))
         }
     }
 }

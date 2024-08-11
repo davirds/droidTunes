@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,8 +42,12 @@ internal fun PlayerController(
     onBackward: () -> Unit
 ) {
     val playerAction = if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play
-    val playerActionDescription = if (isPlaying) "pause" else "play"
     val playerActionClick = if (isPlaying) onPause else onPlay
+    val playerActionDescription = if (isPlaying) {
+        stringResource(id = R.string.content_description_play)
+    } else {
+        stringResource(id = R.string.content_description_pause)
+    }
 
     Column(
         modifier = modifier,
@@ -94,7 +99,7 @@ internal fun PlayerController(
                     .size(32.dp),
                 painter = painterResource(id = R.drawable.ic_backward),
                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
-                contentDescription = "backward"
+                contentDescription = stringResource(id = R.string.content_description_backward)
             )
             Image(
                 modifier = Modifier
@@ -112,7 +117,7 @@ internal fun PlayerController(
                     .size(32.dp),
                 painter = painterResource(id = R.drawable.ic_forward),
                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
-                contentDescription = "forward"
+                contentDescription = stringResource(id = R.string.content_description_forward)
             )
         }
     }

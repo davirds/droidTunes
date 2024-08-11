@@ -31,6 +31,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,6 +39,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import coil.compose.rememberAsyncImagePainter
+import com.davirdgs.tunes.R
 import com.davirdgs.tunes.data.model.Song
 import com.davirdgs.tunes.ui.songMock
 import com.davirdgs.tunes.ui.theme.AppTheme
@@ -164,7 +166,7 @@ private fun PlayerContent(
                 .size(200.dp)
                 .clip(RoundedCornerShape(8.dp)),
             painter = rememberAsyncImagePainter(model = uiState.song.largeArtWorkUrl),
-            contentDescription = "Artwork"
+            contentDescription = stringResource(id = R.string.content_description_art_work)
         )
         Spacer(modifier = Modifier.weight(0.4f))
         PlayerController(
@@ -209,7 +211,7 @@ private fun PlayerHeader(
                 .size(32.dp),
             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
             tint = MaterialTheme.colorScheme.onBackground,
-            contentDescription = "back"
+            contentDescription = stringResource(id = R.string.content_description_back)
         )
         Icon(
             modifier = Modifier
@@ -219,7 +221,7 @@ private fun PlayerHeader(
                 .size(32.dp),
             imageVector = Icons.AutoMirrored.Filled.List,
             tint = MaterialTheme.colorScheme.onBackground,
-            contentDescription = "options"
+            contentDescription = stringResource(id = R.string.content_description_options)
         )
     }
 }

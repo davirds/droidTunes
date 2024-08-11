@@ -12,9 +12,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.davirdgs.tunes.R
 import com.davirdgs.tunes.data.model.Song
 import com.davirdgs.tunes.ui.component.EmptyState
 import com.davirdgs.tunes.ui.component.ErrorState
@@ -60,7 +62,7 @@ internal fun AlbumContent(
             )
             uiState.showAlbumError -> ErrorState(onRetry = onRetry)
             uiState.showAlbumLoading -> LoadingState()
-            else -> EmptyState(message = "No Album found")
+            else -> EmptyState(message = stringResource(id = R.string.album_empty_title))
         }
     }
 }
