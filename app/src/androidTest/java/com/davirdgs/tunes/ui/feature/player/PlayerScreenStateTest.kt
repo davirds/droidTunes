@@ -97,6 +97,19 @@ class PlayerScreenStateTest {
     }
 
     @Test
+    fun test_PlayerScreen_album_empty_state() {
+        val songs = songsMock(0)
+        val uiState = PlayerUiState(songMock(), album = songs)
+        composeTestRule.run {
+            playerScreen(uiState)
+            onNodeWithContentDescription("Options").assertExists()
+            onNodeWithContentDescription("Options").performClick()
+            onNodeWithTag("SongsList").assertDoesNotExist()
+            onNodeWithText("No album found").assertExists()
+        }
+    }
+
+    @Test
     fun test_PlayerScreen_album_success_state() {
         val songs = songsMock(12)
         val uiState = PlayerUiState(songMock(), album = songs)

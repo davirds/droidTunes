@@ -44,6 +44,18 @@ class HomeScreenStateTest {
     }
 
     @Test
+    fun test_HomeScreen_empty_state() {
+        val songs = songsMock(0)
+        val uiState = HomeUiState(songs = songs)
+        composeTestRule.run {
+            homeScreen(uiState)
+            onNodeWithText("Search for songs").assertExists()
+            onNodeWithTag("SongsList").assertDoesNotExist()
+            onNodeWithText("No songs found yet").assertExists()
+        }
+    }
+
+    @Test
     fun test_HomeScreen_success_state() {
         val songs = songsMock(12)
         val uiState = HomeUiState(songs = songs)
