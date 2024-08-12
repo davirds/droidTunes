@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -42,7 +43,9 @@ fun SearchField(
 ) {
     var hasFocus by remember { mutableStateOf(false) }
     BasicTextField(
-        modifier = modifier.onFocusChanged { hasFocus = it.hasFocus },
+        modifier = modifier
+            .onFocusChanged { hasFocus = it.hasFocus }
+            .testTag(stringResource(id = R.string.test_tag_search_field)),
         value = value,
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         keyboardActions = KeyboardActions(onSearch = { onSearch() }),

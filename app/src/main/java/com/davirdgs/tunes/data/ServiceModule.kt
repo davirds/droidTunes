@@ -59,9 +59,14 @@ internal object ServiceModule {
     @Provides
     internal fun provideService(retrofit: Retrofit): ApiService =
         retrofit.create(ApiService::class.java)
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+object RepositoryModule {
 
     @Provides
-    fun provideTunesRepository(
+    internal fun provideTunesRepository(
         apiService: ApiService
     ): TunesRepository = TunesRepositoryImpl(apiService)
 }
