@@ -21,7 +21,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.davirdgs.tunes.R
-import com.davirdgs.tunes.data.model.Song
+import com.davirdgs.tunes.domain.models.Song
 import com.davirdgs.tunes.ui.feature.home.SongItem
 
 @Composable

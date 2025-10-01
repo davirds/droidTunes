@@ -17,7 +17,7 @@ import retrofit2.converter.kotlinx.serialization.asConverterFactory
 
 @Module
 @InstallIn(SingletonComponent::class)
-internal object ServiceModule {
+internal object DataModule {
 
     @Provides
     internal fun provideLoggingInterceptor() = HttpLoggingInterceptor().apply {
@@ -59,14 +59,4 @@ internal object ServiceModule {
     @Provides
     internal fun provideService(retrofit: Retrofit): ApiService =
         retrofit.create(ApiService::class.java)
-}
-
-@Module
-@InstallIn(SingletonComponent::class)
-object RepositoryModule {
-
-    @Provides
-    internal fun provideTunesRepository(
-        apiService: ApiService
-    ): TunesRepository = TunesRepositoryImpl(apiService)
 }

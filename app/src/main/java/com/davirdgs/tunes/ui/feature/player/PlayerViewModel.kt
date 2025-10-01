@@ -1,22 +1,23 @@
 package com.davirdgs.tunes.ui.feature.player
 
-import android.net.Uri
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import com.davirdgs.tunes.base.jsonParam
-import com.davirdgs.tunes.data.TunesRepository
-import com.davirdgs.tunes.data.model.Song
+import com.davirdgs.tunes.domain.repositories.TunesRepository
+import com.davirdgs.tunes.domain.models.Song
 import com.davirdgs.tunes.player.PlayerExecutor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import androidx.core.net.toUri
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 
 @HiltViewModel
 internal class PlayerViewModel @Inject constructor(
@@ -25,19 +26,19 @@ internal class PlayerViewModel @Inject constructor(
     private val tunesRepository: TunesRepository
 ) : ViewModel() {
     private val songParam by lazy { savedStateHandle.jsonParam<SongParam>(SONG_PARAM) }
-    private var _uiState by mutableStateOf(PlayerUiState(songParam.toSong()))
-    val uiState: PlayerUiState
+    private var _uiState = MutableStateFlow(PlayerUiState(songParam.toSong()))
+    val uiState: StateFlow<PlayerUiState>
         get() = _uiState
 
     init {
         loadAlbumSongs()
         subscribePlayerEvents()
-        startPlayer(_uiState.song)
+        startPlayer(_uiState.value.song)
     }
 
     fun playSong(song: Song) {
-        _uiState = _uiState.copy(song = song)
-        startPlayer(_uiState.song)
+        _uiState.update { it.copy(song = song) }
+        startPlayer(_uiState.value.song)
     }
 
     fun play() {
@@ -57,7 +58,7 @@ internal class PlayerViewModel @Inject constructor(
     }
 
     fun seekTo(percentage: Float) {
-        val position = (_uiState.duration * percentage).toLong()
+        val position = (_uiState.value.duration * percentage).toLong()
         playerExecutor.seekTo(position)
     }
 
@@ -71,18 +72,21 @@ internal class PlayerViewModel @Inject constructor(
     }
 
     private fun loadAlbumSongs() {
-        _uiState = _uiState.copy(showAlbumLoading = true)
+        _uiState.update { it.copy(showAlbumLoading = true) }
         viewModelScope.launch {
-            tunesRepository.getAlbum(_uiState.song.collection.id)
+            tunesRepository.getAlbum(_uiState.value.song.collection.id)
                 .collectLatest { result ->
-                    _uiState = result.fold(
-                        onSuccess = { album ->
-                            _uiState.copy(album = album, showAlbumLoading = false)
-                        },
-                        onFailure = {
-                            _uiState.copy(showAlbumLoading = false, showAlbumError = true)
-                        }
-                    )
+                    _uiState.update {
+                        result.fold(
+                            onSuccess = { album ->
+                                it.copy(album = album, showAlbumLoading = false)
+                            },
+                            onFailure = { error ->
+                                Log.d("PlayerViewModel", "loadAlbumSongs: $error")
+                                it.copy(showAlbumLoading = false, showAlbumError = true)
+                            }
+                        )
+                    }
                 }
         }
     }
@@ -90,12 +94,14 @@ internal class PlayerViewModel @Inject constructor(
     private fun subscribePlayerEvents() {
         viewModelScope.launch {
             playerExecutor.mediaStateFlow.collectLatest { mediaState ->
-                _uiState = _uiState.copy(
-                    isPlaying = mediaState.isPlaying,
-                    position = mediaState.position,
-                    duration = mediaState.duration,
-                    progress = mediaState.progress
-                )
+                _uiState.update {
+                    it.copy(
+                        isPlaying = mediaState.isPlaying,
+                        position = mediaState.position,
+                        duration = mediaState.duration,
+                        progress = mediaState.progress
+                    )
+                }
             }
         }
     }
@@ -124,7 +130,7 @@ private fun Song.toMediaItem() = MediaItem.Builder()
     .setMediaMetadata(
         MediaMetadata.Builder()
             .setTitle(name)
-            .setArtworkUri(Uri.parse(largeArtWorkUrl))
+            .setArtworkUri(largeArtWorkUrl.toUri())
             .setArtist(artist.name)
             .setAlbumTitle(collection.name)
             .build()

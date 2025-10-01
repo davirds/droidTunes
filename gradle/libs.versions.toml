@@ -3,32 +3,32 @@
 #####
 [versions]
 ##### Define compile options
-compileSdk = "34"
-targetSdk = "34"
+compileSdk = "36"
+targetSdk = "36"
 minSdk = "27"
 ##### Define dependencie versions
-activityCompose = "1.9.1"
-androidxJunit = "1.2.1"
-androidxComposeBom = "2024.06.00"
-androidGradlePlugin = "8.5.2"
+activityCompose = "1.11.0"
+androidxJunit = "1.3.0"
+androidxComposeBom = "2025.09.01"
+androidGradlePlugin = "8.13.0"
 coil = "2.7.0"
-coreKtx = "1.13.1"
+coreKtx = "1.17.0"
 coreSplashscreen = "1.1.0-rc01"
-datastore = "1.1.1"
-espressoCore = "3.6.1"
-googleKsp = "2.0.10-1.0.24"
-hilt = "2.52"
-hiltCompose = "1.2.0"
+datastore = "1.1.7"
+espressoCore = "3.7.0"
+googleKsp = "2.2.10-2.0.2"
+hilt = "2.57.2"
+hiltCompose = "1.3.0"
 junit = "4.13.2"
-kotlin = "2.0.10"
-kotlinxCoroutinesAndroid = "1.8.1"
-kotlinxSerializationJson = "1.7.1"
-lifecycle = "2.8.4"
-media3 = "1.4.0"
-mockkAndroid = "1.13.12"
-navigationCompose = "2.7.7"
-okhttpBom = "4.12.0"
-retrofit2 = "2.11.0"
+kotlin = "2.2.20"
+kotlinxCoroutinesAndroid = "1.10.2"
+kotlinxSerializationJson = "1.9.0"
+lifecycle = "2.9.4"
+media3 = "1.8.0"
+mockkAndroid = "1.14.6"
+navigationCompose = "2.9.5"
+okhttpBom = "5.1.0"
+retrofit2 = "3.0.0"
 spotless = "6.10.0"
 
 [plugins]
@@ -44,6 +44,7 @@ diffplug-spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "androidxComposeBom" }
 androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
+androidx-compose-material-icons = { module = "androidx.compose.material:material-icons-extended" }
 androidx-compose-ui = { module = "androidx.compose.ui:ui" }
 androidx-compose-uigraphics = { module = "androidx.compose.ui:ui-graphics" }
 androidx-compose-ui-test = { module = "androidx.compose.ui:ui-test" }

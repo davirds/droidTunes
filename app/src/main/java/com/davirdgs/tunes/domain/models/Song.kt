@@ -1,4 +1,4 @@
-package com.davirdgs.tunes.data.model
+package com.davirdgs.tunes.domain.models
 
 data class Song(
     val id: Int,

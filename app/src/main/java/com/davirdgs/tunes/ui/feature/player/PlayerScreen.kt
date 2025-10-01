@@ -28,6 +28,7 @@ import androidx.compose.material3.SheetValue
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,13 +36,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import coil.compose.rememberAsyncImagePainter
 import com.davirdgs.tunes.R
-import com.davirdgs.tunes.data.model.Song
+import com.davirdgs.tunes.domain.models.Song
 import com.davirdgs.tunes.ui.songMock
 import com.davirdgs.tunes.ui.theme.AppTheme
 import kotlinx.coroutines.launch
@@ -68,8 +70,9 @@ fun NavGraphBuilder.playerScreen(
             )
         )
         val viewModel = hiltViewModel<PlayerViewModel>()
+        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
         PlayerScreen(
-            uiState = viewModel.uiState,
+            uiState = uiState,
             scaffoldState = scaffoldState,
             onNavigateBack = navigateBack,
             onRetry = viewModel::retry,

@@ -1,4 +1,4 @@
-package com.davirdgs.tunes.data.remote.model
+package com.davirdgs.tunes.data.models
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

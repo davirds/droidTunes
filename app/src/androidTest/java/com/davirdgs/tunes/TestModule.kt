@@ -1,6 +1,6 @@
 package com.davirdgs.tunes
 
-import com.davirdgs.tunes.data.ServiceModule
+import com.davirdgs.tunes.data.DataModule
 import com.davirdgs.tunes.data.remote.ApiService
 import dagger.Module
 import dagger.Provides
@@ -14,7 +14,7 @@ internal val apiServiceMock = mockk<ApiService>(relaxed = true)
 @Module
 @TestInstallIn(
     components = [SingletonComponent::class],
-    replaces = [ServiceModule::class]
+    replaces = [DataModule::class]
 )
 object TestModule {
 

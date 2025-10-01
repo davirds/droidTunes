@@ -1,8 +1,8 @@
 package com.davirdgs.tunes
 
 import com.davirdgs.tunes.data.remote.ApiService
-import com.davirdgs.tunes.data.remote.model.BaseResponse
-import com.davirdgs.tunes.data.remote.model.Track
+import com.davirdgs.tunes.data.models.BaseResponse
+import com.davirdgs.tunes.data.models.Track
 import io.mockk.coEvery
 import java.lang.Exception
 

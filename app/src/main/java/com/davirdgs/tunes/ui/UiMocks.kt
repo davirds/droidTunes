@@ -1,8 +1,8 @@
 package com.davirdgs.tunes.ui
 
-import com.davirdgs.tunes.data.model.Artist
-import com.davirdgs.tunes.data.model.Collection
-import com.davirdgs.tunes.data.model.Song
+import com.davirdgs.tunes.domain.models.Artist
+import com.davirdgs.tunes.domain.models.Collection
+import com.davirdgs.tunes.domain.models.Song
 
 internal fun songMock(id: Int = 0) = Song(
     id = id,
@@ -20,6 +20,7 @@ internal fun songMock(id: Int = 0) = Song(
     )
 )
 
-internal fun songsMock(count: Int = 1) = buildList {
-    repeat(count) { add(songMock(it)) }
-}
+internal fun songsMock(count: Int = 1) =
+    (0..count).map {
+        songMock(it)
+    }

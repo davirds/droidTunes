@@ -1,9 +1,9 @@
 package com.davirdgs.tunes.ui.feature.player
 
 import com.davirdgs.tunes.base.toJson
-import com.davirdgs.tunes.data.model.Artist
-import com.davirdgs.tunes.data.model.Collection
-import com.davirdgs.tunes.data.model.Song
+import com.davirdgs.tunes.domain.models.Artist
+import com.davirdgs.tunes.domain.models.Collection
+import com.davirdgs.tunes.domain.models.Song
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

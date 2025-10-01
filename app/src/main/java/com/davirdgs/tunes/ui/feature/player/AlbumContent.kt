@@ -17,7 +17,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.davirdgs.tunes.R
-import com.davirdgs.tunes.data.model.Song
+import com.davirdgs.tunes.domain.models.Song
 import com.davirdgs.tunes.ui.component.EmptyState
 import com.davirdgs.tunes.ui.component.ErrorState
 import com.davirdgs.tunes.ui.component.LoadingState

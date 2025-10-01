@@ -9,15 +9,17 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.davirdgs.tunes.R
-import com.davirdgs.tunes.data.model.Song
+import com.davirdgs.tunes.domain.models.Song
 import com.davirdgs.tunes.ui.component.EmptyState
 import com.davirdgs.tunes.ui.component.ErrorState
 import com.davirdgs.tunes.ui.component.LoadingState
@@ -33,8 +35,9 @@ fun NavGraphBuilder.homeScreen(
 ) {
     composable(route = HOME_SCREEN) {
         val viewModel = hiltViewModel<HomeViewModel>()
+        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
         HomeScreen(
-            uiState = viewModel.uiState,
+            uiState = uiState,
             onQueryChange = viewModel::onQueryChange,
             onSearch = viewModel::onSearch,
             onRetry = viewModel::onSearch,

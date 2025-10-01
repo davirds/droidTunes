@@ -1,7 +1,7 @@
 package com.davirdgs.tunes.data.remote
 
-import com.davirdgs.tunes.data.remote.model.BaseResponse
-import com.davirdgs.tunes.data.remote.model.Track
+import com.davirdgs.tunes.data.models.BaseResponse
+import com.davirdgs.tunes.data.models.Track
 import retrofit2.http.GET
 import retrofit2.http.Query
 
