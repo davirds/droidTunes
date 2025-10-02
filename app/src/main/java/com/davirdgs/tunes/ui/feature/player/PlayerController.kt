@@ -93,10 +93,10 @@ internal fun PlayerController(
         ) {
             Image(
                 modifier = Modifier
+                    .size(48.dp)
                     .clip(RoundedCornerShape(50))
                     .clickable { onBackward() }
-                    .padding(8.dp)
-                    .size(32.dp),
+                    .padding(8.dp),
                 painter = painterResource(id = R.drawable.ic_backward),
                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
                 contentDescription = stringResource(id = R.string.content_description_backward)
@@ -112,9 +112,9 @@ internal fun PlayerController(
             Image(
                 modifier = Modifier
                     .clip(RoundedCornerShape(50))
+                    .size(48.dp)
                     .clickable { onForward() }
-                    .padding(8.dp)
-                    .size(32.dp),
+                    .padding(8.dp),
                 painter = painterResource(id = R.drawable.ic_forward),
                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
                 contentDescription = stringResource(id = R.string.content_description_forward)
