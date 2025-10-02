@@ -6,7 +6,6 @@ import com.davirdgs.tunes.domain.models.Artist
 import com.davirdgs.tunes.domain.models.Collection
 import com.davirdgs.tunes.domain.models.Song
 
-
 internal fun BaseResponse<Track>.toSongList(): List<Song> =
     results
         .filter { it.kind == "song" }

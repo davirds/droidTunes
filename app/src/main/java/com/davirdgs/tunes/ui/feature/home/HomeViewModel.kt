@@ -3,8 +3,8 @@ package com.davirdgs.tunes.ui.feature.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.davirdgs.tunes.domain.repositories.TunesRepository
 import com.davirdgs.tunes.domain.models.Song
+import com.davirdgs.tunes.domain.repositories.TunesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.FlowPreview
@@ -57,12 +57,9 @@ internal class HomeViewModel @Inject constructor(
         searchJob?.cancel()
 
         searchJob = viewModelScope.launch {
-            val currentSongs = if (isNewSearch) emptyList() else _uiState.value.songs
-            val offset = if (isNewSearch) 0 else _uiState.value.songs.size
+            _uiState.update { it.copy(showLoading = true, showError = false) }
 
-            _uiState.update {
-                it.copy(songs = currentSongs, showLoading = true, showError = false)
-            }
+            val offset = if (isNewSearch) 0 else _uiState.value.songs.size
 
             tunesRepository.searchSongs(
                 query = query,
@@ -72,8 +69,14 @@ internal class HomeViewModel @Inject constructor(
                 result
                     .onSuccess { newSongs ->
                         _uiState.update { currentState ->
+                            val updatedSongs = if (isNewSearch) {
+                                newSongs
+                            } else {
+                                currentState.songs + newSongs
+                            }
+
                             currentState.copy(
-                                songs = currentState.songs + newSongs,
+                                songs = updatedSongs,
                                 showLoading = false,
                             )
                         }
@@ -92,7 +95,7 @@ internal class HomeViewModel @Inject constructor(
     }
 
     companion object {
-        const val PAGE_SIZE = 20
+        const val PAGE_SIZE = 25
     }
 }
 

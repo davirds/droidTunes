@@ -1,23 +1,23 @@
 package com.davirdgs.tunes.ui.feature.player
 
 import android.util.Log
+import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
-import com.davirdgs.tunes.domain.repositories.TunesRepository
+import androidx.navigation.toRoute
 import com.davirdgs.tunes.domain.models.Song
+import com.davirdgs.tunes.domain.repositories.TunesRepository
 import com.davirdgs.tunes.player.PlayerExecutor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
-import androidx.core.net.toUri
-import androidx.navigation.toRoute
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 internal class PlayerViewModel @Inject constructor(

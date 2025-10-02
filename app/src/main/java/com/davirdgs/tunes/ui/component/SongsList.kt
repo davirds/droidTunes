@@ -54,7 +54,10 @@ fun SongsList(
         ),
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        items(songs) { song ->
+        items(
+            items = songs,
+            key = { song -> song.id }
+        ) { song ->
             SongItem(
                 name = song.name,
                 artist = song.artist.name,
@@ -66,6 +69,6 @@ fun SongsList(
 }
 
 internal fun LazyListState.reachedBottom(buffer: Int = 5): Boolean {
-    val lastItem = this.layoutInfo.visibleItemsInfo.lastOrNull()
-    return lastItem?.index != 0 && lastItem?.index == this.layoutInfo.totalItemsCount - buffer
+    val lastVisibleItem = this.layoutInfo.visibleItemsInfo.lastOrNull() ?: return false
+    return lastVisibleItem.index >= this.layoutInfo.totalItemsCount - 1 - buffer
 }
