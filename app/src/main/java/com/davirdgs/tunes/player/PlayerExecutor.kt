@@ -29,8 +29,12 @@ interface PlayerExecutor {
 internal class PlayerExecutorImpl @Inject constructor(
     private val mediaControllerBuilder: MediaController.Builder
 ) : PlayerExecutor, Player.Listener {
-    private val handler = Handler(Looper.getMainLooper())
     private val _mediaStateFlow = MutableStateFlow(MediaState())
+
+    override val mediaStateFlow: Flow<MediaState>
+        get() = _mediaStateFlow
+
+    private val handler = Handler(Looper.getMainLooper())
     private var _mediaController: ListenableFuture<MediaController>? = null
     private var _player: Player? = null
 
@@ -45,8 +49,6 @@ internal class PlayerExecutorImpl @Inject constructor(
             }
         }
     }
-
-    override val mediaStateFlow: Flow<MediaState> = _mediaStateFlow
 
     private fun setupMediaController() {
         if (_mediaController == null) {

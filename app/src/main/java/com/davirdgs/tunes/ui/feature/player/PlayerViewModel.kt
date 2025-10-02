@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
-import com.davirdgs.tunes.base.jsonParam
 import com.davirdgs.tunes.domain.repositories.TunesRepository
 import com.davirdgs.tunes.domain.models.Song
 import com.davirdgs.tunes.player.PlayerExecutor
@@ -15,6 +14,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import androidx.core.net.toUri
+import androidx.navigation.toRoute
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -25,8 +25,8 @@ internal class PlayerViewModel @Inject constructor(
     private val playerExecutor: PlayerExecutor,
     private val tunesRepository: TunesRepository
 ) : ViewModel() {
-    private val songParam by lazy { savedStateHandle.jsonParam<SongParam>(SONG_PARAM) }
-    private var _uiState = MutableStateFlow(PlayerUiState(songParam.toSong()))
+    private val routeParam by lazy { savedStateHandle.toRoute(Player::class) }
+    private var _uiState = MutableStateFlow(PlayerUiState(routeParam.toSong()))
     val uiState: StateFlow<PlayerUiState>
         get() = _uiState
 

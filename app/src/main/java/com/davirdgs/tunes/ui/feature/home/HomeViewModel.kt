@@ -1,5 +1,6 @@
 package com.davirdgs.tunes.ui.feature.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.davirdgs.tunes.domain.repositories.TunesRepository
@@ -7,8 +8,10 @@ import com.davirdgs.tunes.domain.models.Song
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -23,14 +26,14 @@ internal class HomeViewModel @Inject constructor(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState>
-        get() = _uiState
+        get() = _uiState.asStateFlow()
 
-    private var currentPage = 0
+    private var searchJob: Job? = null
 
     init {
         viewModelScope.launch {
             _uiState.map { it.query }
-                .debounce(200L)
+                .debounce(300L)
                 .distinctUntilChanged()
                 .collectLatest(::onSearch)
         }
@@ -40,47 +43,61 @@ internal class HomeViewModel @Inject constructor(
         _uiState.update { it.copy(query = query) }
     }
 
-    fun onSearch(query: String = uiState.value.query) {
-        _uiState.update { it.copy(showLoading = true) }
-        viewModelScope.launch {
-            tunesRepository.searchSongs(query, offset = 0, limit = PAGE_SIZE)
-                .collectLatest { result ->
-                    _uiState.update {
-                        result.fold(
-                            onSuccess = { songs -> it.copy(songs = songs, showLoading = false) },
-                            onFailure = { e -> it.copy(showLoading = false, showError = true) }
-                        )
-                    }
-                }
-        }
+    fun onSearch(query: String = _uiState.value.query) {
+        fetchSongs(query = query, isNewSearch = true)
     }
 
     fun loadMore() {
-        viewModelScope.launch {
-            val query = uiState.value.query
-            val offset = PAGE_SIZE * currentPage
-            tunesRepository.searchSongs(query, offset, PAGE_SIZE)
-                .collectLatest { result ->
-                    result.onSuccess { songs ->
-                        if (songs.isNotEmpty()) {
-                            _uiState.update {
-                                val newState = it.copy(songs = it.songs + songs)
-                                currentPage++
-                                newState
-                            }
+        if (_uiState.value.showLoading) return
+        Log.d("HomeViewModel", "loadMore")
+        fetchSongs(query = _uiState.value.query, isNewSearch = false)
+    }
+
+    private fun fetchSongs(query: String, isNewSearch: Boolean) {
+        searchJob?.cancel()
+
+        searchJob = viewModelScope.launch {
+            val currentSongs = if (isNewSearch) emptyList() else _uiState.value.songs
+            val offset = if (isNewSearch) 0 else _uiState.value.songs.size
+
+            _uiState.update {
+                it.copy(songs = currentSongs, showLoading = true, showError = false)
+            }
+
+            tunesRepository.searchSongs(
+                query = query,
+                offset = offset,
+                limit = PAGE_SIZE
+            ).collectLatest { result ->
+                result
+                    .onSuccess { newSongs ->
+                        _uiState.update { currentState ->
+                            currentState.copy(
+                                songs = currentState.songs + newSongs,
+                                showLoading = false,
+                            )
                         }
                     }
-                }
+                    .onFailure { e ->
+                        Log.e("HomeViewModel", "fetchSongs error", e)
+                        _uiState.update {
+                            it.copy(
+                                showError = true,
+                                showLoading = false,
+                            )
+                        }
+                    }
+            }
         }
     }
 
     companion object {
-        const val PAGE_SIZE = 15
+        const val PAGE_SIZE = 20
     }
 }
 
 internal data class HomeUiState(
-    val query: String = "",
+    val query: String = "Anitta",
     val songs: List<Song> = emptyList(),
     val showError: Boolean = false,
     val showLoading: Boolean = false,

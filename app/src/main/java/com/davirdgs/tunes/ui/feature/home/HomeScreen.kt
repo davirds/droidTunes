@@ -27,13 +27,15 @@ import com.davirdgs.tunes.ui.component.SearchField
 import com.davirdgs.tunes.ui.component.SongsList
 import com.davirdgs.tunes.ui.songsMock
 import com.davirdgs.tunes.ui.theme.AppTheme
+import kotlinx.serialization.Serializable
 
-const val HOME_SCREEN = "home"
+@Serializable
+object Home
 
 fun NavGraphBuilder.homeScreen(
     navigateToPlayer: (Song) -> Unit
 ) {
-    composable(route = HOME_SCREEN) {
+    composable<Home> {
         val viewModel = hiltViewModel<HomeViewModel>()
         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
         HomeScreen(

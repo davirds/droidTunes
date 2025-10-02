@@ -29,8 +29,8 @@ fun LoadingState(
         CircularProgressIndicator(
             modifier = Modifier
                 .imePadding()
+                .padding(bottom = 120.dp)
                 .size(48.dp)
-                .padding(bottom = 120.dp),
         )
     }
 }

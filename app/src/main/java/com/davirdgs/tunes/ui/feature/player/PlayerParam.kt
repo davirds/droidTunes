@@ -1,36 +1,11 @@
 package com.davirdgs.tunes.ui.feature.player
 
-import com.davirdgs.tunes.base.toJson
 import com.davirdgs.tunes.domain.models.Artist
 import com.davirdgs.tunes.domain.models.Collection
 import com.davirdgs.tunes.domain.models.Song
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 
-@Serializable
-internal data class SongParam(
-    @SerialName("id")
-    val id: Int,
-    @SerialName("name")
-    val name: String,
-    @SerialName("time_millis")
-    val timeMillis: Int,
-    @SerialName("artwork_url")
-    val artworkUrl: String,
-    @SerialName("artist_id")
-    val artistId: Int,
-    @SerialName("artist_name")
-    val artistName: String,
-    @SerialName("collection_id")
-    val collectionId: Int,
-    @SerialName("collection_name")
-    val collectionName: String,
-    @SerialName("preview_url")
-    val previewUrl: String
-)
-
-internal fun Song.toSongParam(): String =
-    SongParam(
+internal fun Song.toPlayerScreen() =
+    Player(
         id = id,
         name = name,
         timeMillis = timeMillis,
@@ -40,9 +15,9 @@ internal fun Song.toSongParam(): String =
         artistName = artist.name,
         collectionId = collection.id,
         collectionName = collection.name
-    ).toJson()
+    )
 
-internal fun SongParam.toSong(): Song =
+internal fun Player.toSong(): Song =
     Song(
         id = id,
         name = name,

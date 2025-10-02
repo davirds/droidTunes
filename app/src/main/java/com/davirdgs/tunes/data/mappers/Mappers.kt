@@ -20,7 +20,7 @@ internal fun Track.toSong() =
         id = trackId!!,
         name = trackName!!,
         timeMillis = trackTimeMillis!!,
-        previewUrl = previewUrl!!
+        previewUrl = previewUrl ?: ""
     )
 
 internal fun Track.toArtist() =

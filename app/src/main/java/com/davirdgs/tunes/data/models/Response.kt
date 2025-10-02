@@ -60,7 +60,7 @@ internal data class Track(
     @SerialName("primaryGenreName")
     val primaryGenreName: String,
     @SerialName("releaseDate")
-    val releaseDate: String,
+    val releaseDate: String? = null,
     @SerialName("trackCensoredName")
     val trackCensoredName: String? = null,
     @SerialName("trackCount")

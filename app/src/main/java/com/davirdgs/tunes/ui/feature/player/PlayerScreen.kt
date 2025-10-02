@@ -47,21 +47,41 @@ import com.davirdgs.tunes.domain.models.Song
 import com.davirdgs.tunes.ui.songMock
 import com.davirdgs.tunes.ui.theme.AppTheme
 import kotlinx.coroutines.launch
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-internal const val SONG_PARAM = "song"
-private const val PLAYER_PATH = "player"
-private const val PLAYER_SCREEN = "$PLAYER_PATH?$SONG_PARAM={$SONG_PARAM}"
+@Serializable
+data class Player(
+    @SerialName("id")
+    val id: Int,
+    @SerialName("name")
+    val name: String,
+    @SerialName("time_millis")
+    val timeMillis: Int,
+    @SerialName("artwork_url")
+    val artworkUrl: String,
+    @SerialName("artist_id")
+    val artistId: Int,
+    @SerialName("artist_name")
+    val artistName: String,
+    @SerialName("collection_id")
+    val collectionId: Int,
+    @SerialName("collection_name")
+    val collectionName: String,
+    @SerialName("preview_url")
+    val previewUrl: String
+)
 
 fun NavController.navigateToPlayer(song: Song) {
-    val songParam = song.toSongParam()
-    this.navigate("$PLAYER_PATH?$SONG_PARAM=$songParam")
+    val playerScreen = song.toPlayerScreen()
+    this.navigate(playerScreen)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 fun NavGraphBuilder.playerScreen(
     navigateBack: () -> Unit,
 ) {
-    composable(route = PLAYER_SCREEN) {
+    composable<Player> {
         val scope = rememberCoroutineScope()
         val scaffoldState = rememberBottomSheetScaffoldState(
             bottomSheetState = rememberStandardBottomSheetState(
