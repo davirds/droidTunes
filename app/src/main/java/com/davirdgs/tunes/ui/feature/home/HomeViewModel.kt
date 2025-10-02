@@ -100,7 +100,7 @@ internal class HomeViewModel @Inject constructor(
 }
 
 internal data class HomeUiState(
-    val query: String = "Anitta",
+    val query: String = "Foo Fighter",
     val songs: List<Song> = emptyList(),
     val showError: Boolean = false,
     val showLoading: Boolean = false,

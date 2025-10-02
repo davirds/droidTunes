@@ -56,7 +56,7 @@ fun SongsList(
     ) {
         items(
             items = songs,
-            key = { song -> song.id }
+//            key = { song -> song.id }
         ) { song ->
             SongItem(
                 name = song.name,
