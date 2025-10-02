@@ -1,22 +1,28 @@
 package com.davirdgs.tunes.player
-
-import android.os.Handler
-import android.os.Looper
+import android.util.Log
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import java.util.concurrent.Executor
 import javax.inject.Inject
-import kotlinx.coroutines.Runnable
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 
 interface PlayerExecutor {
-    val mediaStateFlow: Flow<MediaState>
+    val mediaStateFlow: StateFlow<MediaState>
     fun startPlayer(mediaItem: MediaItem, startPositionMs: Long = 0L)
     fun play()
     fun pause()
@@ -24,43 +30,29 @@ interface PlayerExecutor {
     fun seekForward()
     fun seekBack()
     fun stop()
+    fun release()
 }
 
+private const val SEEK_INTERVAL_MS = 5000L
+
 internal class PlayerExecutorImpl @Inject constructor(
-    private val mediaControllerBuilder: MediaController.Builder
+    mediaControllerBuilder: MediaController.Builder
 ) : PlayerExecutor, Player.Listener {
+
+    private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+    private var positionUpdateJob: Job? = null
+    private val mediaControllerFuture: ListenableFuture<MediaController> =
+        mediaControllerBuilder.buildAsync()
+    private var player: Player? = null
+
     private val _mediaStateFlow = MutableStateFlow(MediaState())
-
-    override val mediaStateFlow: Flow<MediaState>
-        get() = _mediaStateFlow
-
-    private val handler = Handler(Looper.getMainLooper())
-    private var _mediaController: ListenableFuture<MediaController>? = null
-    private var _player: Player? = null
-
-    private val currentPositionRunnable = Runnable {
-        _player?.run {
-            if (isPlaying) {
-                val progress = calculateProgress(currentPosition, duration)
-                _mediaStateFlow.update {
-                    it.copy(position = currentPosition, progress = progress)
-                }
-                startCurrentPositionLoop()
-            }
-        }
-    }
-
-    private fun setupMediaController() {
-        if (_mediaController == null) {
-            _mediaController = mediaControllerBuilder.buildAsync()
-        }
-    }
+    override val mediaStateFlow: StateFlow<MediaState>
+        get() = _mediaStateFlow.asStateFlow()
 
     override fun startPlayer(mediaItem: MediaItem, startPositionMs: Long) {
-        setupMediaController()
-        _mediaController?.use { controller ->
+        mediaControllerFuture.use { controller ->
             controller.removeListener(this@PlayerExecutorImpl)
-            _player = controller
+            player = controller
             controller.addListener(this@PlayerExecutorImpl)
             controller.playWhenReady = true
             controller.setMediaItem(mediaItem, startPositionMs)
@@ -72,47 +64,39 @@ internal class PlayerExecutorImpl @Inject constructor(
     }
 
     override fun play() {
-        _player?.run { play() }
+        player?.run { play() }
     }
 
     override fun pause() {
-        _player?.run { pause() }
+        player?.run { pause() }
     }
 
     override fun seekForward() {
-        _player?.run {
-            val position = currentPosition + 5000
-            val progress = calculateProgress(position, duration)
-            _mediaStateFlow.update { it.copy(position = position, progress = progress) }
+        player?.run {
+            val position = currentPosition + SEEK_INTERVAL_MS
             seekTo(position)
         }
     }
 
     override fun seekBack() {
-        _player?.run {
-            val position = currentPosition - 5000
-            val progress = calculateProgress(position, duration)
-            _mediaStateFlow.update { it.copy(position = position, progress = progress) }
+        player?.run {
+            val position = currentPosition - SEEK_INTERVAL_MS
             seekTo(position)
         }
     }
 
+    override fun seekTo(position: Long) {
+        player?.run { seekTo(position) }
+    }
+
     override fun stop() {
-        handler.removeCallbacks(currentPositionRunnable)
+        stopCurrentPositionLoop()
         _mediaStateFlow.update { it.copy(isActive = false) }
-        _player?.run {
+        player?.run {
             clearMediaItems()
             stop()
             removeListener(this@PlayerExecutorImpl)
         }
-    }
-
-    override fun seekTo(position: Long) {
-        _mediaStateFlow.update {
-            val progress = calculateProgress(position, it.duration)
-            it.copy(position = position, progress = progress)
-        }
-        _player?.run { seekTo(position) }
     }
 
     override fun onEvents(player: Player, events: Player.Events) {
@@ -144,6 +128,7 @@ internal class PlayerExecutorImpl @Inject constructor(
                     it.copy(isPlaying = true, isLoading = false, duration = duration)
                 }
             } else {
+                stopCurrentPositionLoop()
                 _mediaStateFlow.update {
                     it.copy(isPlaying = false, duration = duration, isActive = isActive)
                 }
@@ -152,8 +137,34 @@ internal class PlayerExecutorImpl @Inject constructor(
     }
 
     private fun startCurrentPositionLoop() {
-        handler.removeCallbacks(currentPositionRunnable)
-        handler.postDelayed(currentPositionRunnable, 1000)
+        stopCurrentPositionLoop()
+        positionUpdateJob = scope.launch {
+            while (isActive) {
+                Log.d("AAAA", "startCurrentPositionLoop")
+                player?.let {
+                    _mediaStateFlow.update { state ->
+                        state.copy(
+                            position = it.currentPosition,
+                            progress = calculateProgress(it.currentPosition, it.duration)
+                        )
+                    }
+                }
+                delay(1000)
+            }
+        }
+    }
+
+    private fun stopCurrentPositionLoop() {
+        positionUpdateJob?.cancel()
+        positionUpdateJob = null
+    }
+
+    override fun release() {
+        stopCurrentPositionLoop()
+        scope.cancel()
+        player?.removeListener(this)
+        MediaController.releaseFuture(mediaControllerFuture)
+        player = null
     }
 }
 

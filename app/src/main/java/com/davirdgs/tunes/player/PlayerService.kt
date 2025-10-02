@@ -13,9 +13,22 @@ class PlayerService : MediaSessionService() {
     @Inject
     lateinit var mediaSession: MediaSession
 
+    @Inject
+    lateinit var playerExecutor: PlayerExecutor
+
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo) = mediaSession
 
     override fun onTaskRemoved(rootIntent: Intent?) {
+        releaseResources()
+        super.onTaskRemoved(rootIntent)
+    }
+
+    override fun onDestroy() {
+        releaseResources()
+        super.onDestroy()
+    }
+
+    private fun releaseResources() {
         mediaSession.run {
             if (player.isPlaying) {
                 player.stop()
@@ -23,8 +36,7 @@ class PlayerService : MediaSessionService() {
             player.release()
             release()
         }
+        playerExecutor.release()
         stopSelf()
-        // TODO Force the process to die
-        Process.killProcess(Process.myPid())
     }
 }
